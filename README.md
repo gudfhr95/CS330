@@ -1,2 +1,2 @@
 # CS330
-# KAIST Operating System
+KAIST CS330 Operating System Projects
