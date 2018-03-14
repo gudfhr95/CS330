@@ -383,6 +383,31 @@ thread_get_recent_cpu (void)
   /* Not yet implemented. */
   return 0;
 }
+
+//FOR ALARM MULTIPLE
+//to update wakeup_tick in struct thread
+void 
+thread_update_wakeup_tick(void)
+{
+	struct list_elem *e;
+	if(!list_empty(&sleep_list)){
+		//printf("list size : %d , ", list_size(&sleep_list));
+		//printf("current timer: ");
+		struct list_elem *e;
+		for(e = list_begin(&sleep_list); e != list_end(&sleep_list); e=list_next(e)){
+			struct thread *t = list_entry(e, struct thread, elem);
+			//printf("%lld ", t->wakeup_tick);
+		}
+		//printf("\n");
+	}
+}
+
+//to wake up thread
+void
+thread_wakeup(void)
+{
+	
+}
 
 /* Idle thread.  Executes when no other thread is ready to run.
 
@@ -469,6 +494,8 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
+  //init wakeup tick to 0
+  t->wakeup_tick = 0;
   list_push_back (&all_list, &t->allelem);
 }
 

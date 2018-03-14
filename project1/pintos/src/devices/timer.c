@@ -24,9 +24,6 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
-/* Init list that contains sleep thread */
-static struct list sleep_list;
-
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
@@ -96,16 +93,21 @@ timer_sleep (int64_t ticks)
 {
   int64_t start = timer_ticks ();
 
-  //get current thread
-  struct thread *current_thread = thread_current();
-  //set timer to current thread
-  &current_thread->wakeup_ticks = start + ticks;
   //disable interrupt
   enum intr_level old_level = intr_disable();
-  thread_block();
-  intr_set_level(old_level);
+  //get current thread
+  struct thread *current_thread = thread_current();
+  //set ticks to current thread
+  current_thread->wakeup_tick = start + ticks;
   //push thread to sleep thread
+  //thread_print_stats();
   list_push_back(&sleep_list, &current_thread->elem);
+  printf("current thread %s pushed in the list\n", current_thread->name);
+  //block thread
+  thread_block();
+  //enable interrupt
+  intr_set_level(old_level);
+
   /*
   ASSERT (intr_get_level () == INTR_ON);
   while (timer_elapsed (start) < ticks) 
@@ -188,6 +190,8 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+  thread_update_wakeup_tick();
+  //thread_wakeup();
   thread_tick ();
 }
 
