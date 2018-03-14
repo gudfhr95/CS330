@@ -97,37 +97,33 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  int64_t start = timer_ticks ();
+  if(ticks>0){
+  	int64_t start = timer_ticks ();
 
-  //disable interrupt
-  enum intr_level old_level = intr_disable();
-  //get current thread
-  struct thread *current_thread = thread_current();
-  //set ticks to current thread
-  current_thread->wakeup_tick = start + ticks;
-  //push thread to sleep thread
-  //thread_print_stats();
-  list_push_back(&sleep_list, &current_thread->elem);
-  list_sort(&sleep_list,less_order,NULL);
-  printf("current sleep list: ");
-  if(!list_empty(&sleep_list)){
+ 	 //disable interrupt
+	enum intr_level old_level = intr_disable();
+	 //get current thread
+  	struct thread *current_thread = thread_current();
+  	 //set ticks to current thread
+  	current_thread->wakeup_tick = start + ticks;
+  	 //push thread to sleep thread
+  	 //thread_print_stats();
+  	list_push_back(&sleep_list, &current_thread->elem);
+  	list_sort(&sleep_list,less_order,NULL);
+  	printf("current sleep list: ");
+  	if(!list_empty(&sleep_list)){
       struct list_elem *e;
       for(e=list_begin(&sleep_list); e!=list_end(&sleep_list); e=list_next(e)){
           struct thread *t = list_entry(e, struct thread, elem);
 			printf("%lli ", t->wakeup_tick);
-         }
+	  }
+  	}
+ 	printf("\ncurrent thread %s pushed in the list, current time : %lli\n", current_thread->name, timer_ticks());
+ 	//block thread
+ 	thread_block();
+ 	//enable interrupt
+	intr_set_level(old_level);
   }
-  printf("\ncurrent thread %s pushed in the list, current time : %lli\n", current_thread->name, timer_ticks());
-  //block thread
-  thread_block();
-  //enable interrupt
-  intr_set_level(old_level);
-
-  /*
-  ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
-	*/
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
