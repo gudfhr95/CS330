@@ -110,6 +110,8 @@ timer_sleep (int64_t ticks)
   	 //thread_print_stats();
   	list_push_back(&sleep_list, &current_thread->elem);
   	list_sort(&sleep_list,less_order,NULL);
+	//for print
+	/*
   	printf("current sleep list: ");
   	if(!list_empty(&sleep_list)){
       struct list_elem *e;
@@ -119,6 +121,7 @@ timer_sleep (int64_t ticks)
 	  }
   	}
  	printf("\ncurrent thread %s pushed in the list, current time : %lli\n", current_thread->name, timer_ticks());
+	*/
  	//block thread
  	thread_block();
  	//enable interrupt
@@ -195,7 +198,7 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-
+
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
@@ -214,14 +217,22 @@ static bool less_order(const struct list_elem *a, const struct list_elem *b, voi
 
 //to wakeup timer
 void timer_wakeup(void){
-	if(!list_empty(&sleep_list)){
-		struct list_elem *e = list_front(&sleep_list);
-		struct thread *t = list_entry(e, struct thread, elem);
-		//printf("%lli\n", t->wakeup_tick);
-		if(t->wakeup_tick <= timer_ticks()){
-			list_pop_front(&sleep_list);
-			thread_unblock(t);
+	//do infinite loop to wake up simultaneously
+	while(true){
+		if(!list_empty(&sleep_list)){
+			//get first element of sleep_list
+			struct list_elem *e = list_front(&sleep_list);
+			struct thread *t = list_entry(e, struct thread, elem);
+			//if wakeup tick is smaller than OS tick, wake up and unblock thread
+			if(t->wakeup_tick <= timer_ticks()){
+				list_pop_front(&sleep_list);
+				thread_unblock(t);
+			}
+			else
+				break;
 		}
+		else
+			break;
 	}
 }
 
