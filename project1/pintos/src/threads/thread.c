@@ -209,10 +209,8 @@ thread_create (const char *name, int priority,
 
   /* Add to run queue. */
   thread_unblock (t);
-  //list_sort(&ready_list, high_priority_order, NULL);
+  //if created thread has higher priority, change running thread
   if(priority > thread_current()->priority){
-	  //list_sort(&ready_list, high_priority_order, NULL);
-	  //list_pop_front(&ready_list);
 	  thread_yield();
   }
   return tid;
@@ -367,6 +365,7 @@ static bool high_priority_order(const struct list_elem *a, const struct list_ele
 
 	return t1->priority > t2->priority;
 }
+
 /* Returns the current thread's priority. */
 int
 thread_get_priority (void) 
