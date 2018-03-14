@@ -105,9 +105,6 @@ struct thread
 	int64_t wakeup_tick;
   };
 
-/* Init list that contains sleep thread */
-struct list sleep_list;
-
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
@@ -132,9 +129,6 @@ const char *thread_name (void);
 void thread_exit (void) NO_RETURN;
 void thread_yield (void);
 
-/* for update sleep thread */
-void thread_update_wakeup_tick(void);
-void thread_wakeup(void);
 
 /* Performs some operation on thread t, given auxiliary data AUX. */
 typedef void thread_action_func (struct thread *t, void *aux);

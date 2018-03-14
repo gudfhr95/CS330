@@ -24,6 +24,12 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
+//to init sleep thread list
+struct list sleep_list;
+
+//make list_elem_func to sort sleep list
+static bool less_order(const struct list_elem *a, const struct list_elem *b, void *aux);
+
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
@@ -102,7 +108,16 @@ timer_sleep (int64_t ticks)
   //push thread to sleep thread
   //thread_print_stats();
   list_push_back(&sleep_list, &current_thread->elem);
-  printf("current thread %s pushed in the list\n", current_thread->name);
+  list_sort(&sleep_list,less_order,NULL);
+  printf("current sleep list: ");
+  if(!list_empty(&sleep_list)){
+      struct list_elem *e;
+      for(e=list_begin(&sleep_list); e!=list_end(&sleep_list); e=list_next(e)){
+          struct thread *t = list_entry(e, struct thread, elem);
+			printf("%lli ", t->wakeup_tick);
+         }
+  }
+  printf("\ncurrent thread %s pushed in the list, current time : %lli\n", current_thread->name, timer_ticks());
   //block thread
   thread_block();
   //enable interrupt
@@ -190,9 +205,28 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
-  thread_update_wakeup_tick();
-  //thread_wakeup();
+  timer_wakeup();
   thread_tick ();
+}
+
+//make list_less_func to sort in less order
+static bool less_order(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED){
+	struct thread *t1 = list_entry(a, struct thread, elem);
+	struct thread *t2 = list_entry(b, struct thread, elem);
+	return (t1->wakeup_tick) < (t2->wakeup_tick);
+}
+
+//to wakeup timer
+void timer_wakeup(void){
+	if(!list_empty(&sleep_list)){
+		struct list_elem *e = list_front(&sleep_list);
+		struct thread *t = list_entry(e, struct thread, elem);
+		//printf("%lli\n", t->wakeup_tick);
+		if(t->wakeup_tick <= timer_ticks()){
+			list_pop_front(&sleep_list);
+			thread_unblock(t);
+		}
+	}
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
