@@ -106,24 +106,11 @@ timer_sleep (int64_t ticks)
   	struct thread *current_thread = thread_current();
   	 //set ticks to current thread
   	current_thread->wakeup_tick = start + ticks;
-  	 //push thread to sleep thread
-  	 //thread_print_stats();
+  	 //push thread to sleep thread and sort with ascending order
   	list_push_back(&sleep_list, &current_thread->elem);
   	list_sort(&sleep_list,less_order,NULL);
-	//for print
-	/*
-  	printf("current sleep list: ");
-  	if(!list_empty(&sleep_list)){
-      struct list_elem *e;
-      for(e=list_begin(&sleep_list); e!=list_end(&sleep_list); e=list_next(e)){
-          struct thread *t = list_entry(e, struct thread, elem);
-			printf("%lli ", t->wakeup_tick);
-	  }
-  	}
- 	printf("\ncurrent thread %s pushed in the list, current time : %lli\n", current_thread->name, timer_ticks());
-	*/
  	//block thread
- 	thread_block();
+	thread_block();
  	//enable interrupt
 	intr_set_level(old_level);
   }
@@ -208,11 +195,15 @@ timer_interrupt (struct intr_frame *args UNUSED)
   thread_tick ();
 }
 
-//make list_less_func to sort in less order
+//make list_less_func to sort in less order in tick and priority
 static bool less_order(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED){
 	struct thread *t1 = list_entry(a, struct thread, elem);
 	struct thread *t2 = list_entry(b, struct thread, elem);
-	return (t1->wakeup_tick) < (t2->wakeup_tick);
+	
+	if(t1->wakeup_tick == t2->wakeup_tick)
+		return t1->priority > t2->priority;
+	else
+		return (t1->wakeup_tick) < (t2->wakeup_tick);
 }
 
 //to wakeup timer
