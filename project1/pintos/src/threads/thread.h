@@ -100,6 +100,9 @@ struct thread
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
+
+	//set tick timer to wake up;
+	uint64_t wakeup_tick;
   };
 
 /* If false (default), use round-robin scheduler.

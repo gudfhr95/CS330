@@ -24,6 +24,9 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
+/* Init list that contains sleep thread */
+static struct list sleep_list;
+
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
@@ -37,6 +40,8 @@ timer_init (void)
 {
   pit_configure_channel (0, 2, TIMER_FREQ);
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
+  list_init(&sleep_list);
+  printf("sleep list init\n");
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -91,9 +96,21 @@ timer_sleep (int64_t ticks)
 {
   int64_t start = timer_ticks ();
 
+  //get current thread
+  struct thread *current_thread = thread_current();
+  //set timer to current thread
+  &current_thread->wakeup_ticks = start + ticks;
+  //disable interrupt
+  enum intr_level old_level = intr_disable();
+  thread_block();
+  intr_set_level(old_level);
+  //push thread to sleep thread
+  list_push_back(&sleep_list, &current_thread->elem);
+  /*
   ASSERT (intr_get_level () == INTR_ON);
   while (timer_elapsed (start) < ticks) 
     thread_yield ();
+	*/
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
