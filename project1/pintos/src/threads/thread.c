@@ -322,6 +322,8 @@ thread_yield (void)
   if (cur != idle_thread) 
     list_push_back (&ready_list, &cur->elem);
   cur->status = THREAD_READY;
+  //order ready list as priority
+  list_sort(&ready_list, high_priority_order, NULL);
   schedule ();
   intr_set_level (old_level);
 }
