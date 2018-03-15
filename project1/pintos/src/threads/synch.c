@@ -187,8 +187,6 @@ lock_init (struct lock *lock)
 }
 
 /* Acquires LOCK, sleeping until it becomes available if
-   necessary.  The lock must not already be held by the current
-   thread.
 
    This function may sleep, so it must not be called within an
    interrupt handler.  This function may be called with
@@ -201,8 +199,17 @@ lock_acquire (struct lock *lock)
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
 
-  sema_down (&lock->semaphore);
-  lock->holder = thread_current ();
+  if(lock->holder == NULL){
+  	sema_down (&lock->semaphore);
+  	lock->holder = thread_current ();
+  }
+  else{
+	//priority_donate();
+	if(lock->holder->priority <= thread_get_priority()){
+		lock->holder->priority = thread_get_priority();
+	}
+	sema_down(&lock->semaphore);
+  }
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
@@ -235,9 +242,15 @@ lock_release (struct lock *lock)
 {
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
-
-  lock->holder = NULL;
-  sema_up (&lock->semaphore);
+  if(!list_empty(&lock->semaphore.waiters)){
+ 	lock->holder->priority = lock->holder->first_priority;
+	lock->holder = list_entry(list_begin(&lock->semaphore.waiters), struct thread, elem);
+	sema_up(&lock->semaphore);
+  }
+  else{
+	lock->holder = NULL;
+	sema_up(&lock->semaphore);
+  }
 }
 
 /* Returns true if the current thread holds LOCK, false

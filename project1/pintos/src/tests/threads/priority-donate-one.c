@@ -49,6 +49,7 @@ acquire1_thread_func (void *lock_)
 
   lock_acquire (lock);
   msg ("acquire1: got the lock");
+  //thread_print_stats();
   lock_release (lock);
   msg ("acquire1: done");
 }

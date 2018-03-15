@@ -103,7 +103,11 @@ struct thread
 
 	//set tick timer to wake up;
 	int64_t wakeup_tick;
+
+	//set last priority
+	int first_priority;
   };
+
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
