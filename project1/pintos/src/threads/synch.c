@@ -69,6 +69,7 @@ sema_down (struct semaphore *sema)
   while (sema->value == 0) 
     {
       list_push_back (&sema->waiters, &thread_current ()->elem);
+	  list_sort(&sema->waiters, high_priority_order, NULL);
       thread_block ();
     }
   sema->value--;
@@ -253,6 +254,7 @@ lock_held_by_current_thread (const struct lock *lock)
 /* One semaphore in a list. */
 struct semaphore_elem 
   {
+	int priority;  //to save priority
     struct list_elem elem;              /* List element. */
     struct semaphore semaphore;         /* This semaphore. */
   };
@@ -288,6 +290,15 @@ cond_init (struct condition *cond)
    interrupt handler.  This function may be called with
    interrupts disabled, but interrupts will be turned back on if
    we need to sleep. */
+
+//to order semaphore_elem with descending priority
+bool high_priority_order_sema(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED){
+	struct semaphore_elem *s1 = list_entry(a, struct semaphore_elem, elem);
+	struct semaphore_elem *s2 = list_entry(b, struct semaphore_elem, elem);
+
+	return s1->priority > s2->priority;
+}
+
 void
 cond_wait (struct condition *cond, struct lock *lock) 
 {
@@ -297,9 +308,12 @@ cond_wait (struct condition *cond, struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (lock_held_by_current_thread (lock));
-  
   sema_init (&waiter.semaphore, 0);
-  list_push_back (&cond->waiters, &waiter.elem);
+  //init priority of waiter as current priority
+  waiter.priority = thread_get_priority();
+  list_push_back(&cond->waiters, &waiter.elem);
+  //sort waiter as high priority order
+  list_sort(&cond->waiters, high_priority_order_sema, NULL);
   lock_release (lock);
   sema_down (&waiter.semaphore);
   lock_acquire (lock);
