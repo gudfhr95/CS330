@@ -48,6 +48,7 @@ sema_init (struct semaphore *sema, unsigned value)
 
   sema->value = value;
   list_init (&sema->waiters);
+  list_init (&sema->owner);
 }
 
 /* Down or "P" operation on a semaphore.  Waits for SEMA's value
@@ -116,9 +117,9 @@ sema_up (struct semaphore *sema)
   old_level = intr_disable ();
   //sort waiter as high priority order
   if (!list_empty (&sema->waiters)){
+	list_sort(&sema->waiters, high_priority_order, NULL);
     thread_unblock (list_entry (list_pop_front (&sema->waiters),
                                 struct thread, elem));
-	list_sort(&sema->waiters, high_priority_order, NULL);
   }
   sema->value++;
   //yield main thread to high priority waiter
@@ -185,6 +186,7 @@ lock_init (struct lock *lock)
 
   lock->holder = NULL;
   sema_init (&lock->semaphore, 1);
+  list_push_back(&lock->semaphore.owner, &lock->elem);
 }
 
 /* Acquires LOCK, sleeping until it becomes available if
