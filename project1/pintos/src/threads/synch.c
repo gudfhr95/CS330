@@ -202,6 +202,8 @@ lock_acquire (struct lock *lock)
   lock_priority_donate(lock);
   sema_down(&lock->semaphore);
   lock->holder = thread_current ();
+  //add lock to lock list of holder
+  list_push_back(&thread_current()->lock_list, &lock->elem);
 }
 
 void lock_priority_donate(struct lock *lock){
@@ -209,7 +211,6 @@ void lock_priority_donate(struct lock *lock){
 	if(t != NULL){
 		if(t->priority <= thread_get_priority()){
 			t->priority = thread_get_priority();
-			list_push_back(&t->lock_list, &lock->elem);
 		}
 	}
 }
@@ -244,6 +245,7 @@ lock_release (struct lock *lock)
 {
   ASSERT (lock != NULL);
   ASSERT (lock_held_by_current_thread (lock));
+  list_remove(&lock->elem);
   lock_priority_giveback(lock);
   lock->holder = NULL;
   sema_up(&lock->semaphore);
@@ -251,8 +253,28 @@ lock_release (struct lock *lock)
 
 void lock_priority_giveback(struct lock *lock){
 	struct thread *t = lock->holder;
-	if(!list_empty(&t->lock_list)){
-		t->priority = t->first_priority;
+	//holder priority is donated by other thread
+	if(t->priority != t->first_priority){
+		//if there is no other lock list in this thread
+		if(list_empty(&t->lock_list)){
+			//return to first priority
+			t->priority = t->first_priority;
+		}
+		//if there is other lock list in this thread
+		else{
+			struct list_elem *e;
+			int max = -1;
+			//get the max priority of other lock and change to that priority
+			for(e=list_begin(&t->lock_list); e!=list_end(&t->lock_list); e=list_next(e)){
+				struct lock *l = list_entry(e, struct lock, elem);
+				struct list *waiters = &l->semaphore.waiters;
+				struct thread *temp = list_entry(list_begin(waiters), struct thread, elem);
+				if(max <= temp->priority){
+					max = temp->priority;
+				}
+			}
+			t->priority = max;	
+		}
 	}
 }
 

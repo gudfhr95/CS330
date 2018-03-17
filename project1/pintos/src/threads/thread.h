@@ -107,6 +107,7 @@ struct thread
 	//set last priority
 	int first_priority;
 
+	//to save locks that this thread holds
 	struct list lock_list;
   };
 

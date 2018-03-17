@@ -349,6 +349,8 @@ void
 thread_set_priority (int new_priority) 
 {
   thread_current ()->priority = new_priority;
+  //set first priority as first priority
+  thread_current ()->first_priority = new_priority;
   //sort ready list in descending order
   list_sort(&ready_list, high_priority_order, NULL);
   //get highest priority thread
@@ -492,7 +494,9 @@ init_thread (struct thread *t, const char *name, int priority)
   t->magic = THREAD_MAGIC;
   //init wakeup tick to 0
   t->wakeup_tick = 0;
+  //set first priority as current priority
   t->first_priority = priority;
+  //init lock list
   list_init(&t->lock_list);
   list_push_back (&all_list, &t->allelem);
 }
