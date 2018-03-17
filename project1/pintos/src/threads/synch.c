@@ -221,9 +221,8 @@ void lock_priority_donate(struct lock *lock, struct thread *t){
 				struct list_elem *e;
 				for(e=list_begin(&holder->waiting_lock); e!=list_end(&holder->waiting_lock); e=list_next(e)){
 					struct lock *l = list_entry(e, struct lock, waiting_elem);
-					struct thread *temp = l->holder;
-					if(temp->priority < t->priority)
-						temp->priority = t->priority;
+					//recursively call lock_priority_donate
+					lock_priority_donate(l, thread_current());
 				}
 			}
 		}
