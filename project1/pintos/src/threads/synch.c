@@ -117,6 +117,7 @@ sema_up (struct semaphore *sema)
   old_level = intr_disable ();
   //sort waiter as high priority order
   if (!list_empty (&sema->waiters)){
+	//sort sema waiters with high priority oreder
 	list_sort(&sema->waiters, high_priority_order, NULL);
     thread_unblock (list_entry (list_pop_front (&sema->waiters),
                                 struct thread, elem));
