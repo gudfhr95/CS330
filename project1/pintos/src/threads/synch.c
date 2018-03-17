@@ -199,18 +199,33 @@ lock_acquire (struct lock *lock)
   ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
-  lock_priority_donate(lock);
+  lock_priority_donate(lock, thread_current());
+  //save this lock to waiting_lock in thread
+  list_push_back(&thread_current()->waiting_lock, &lock->waiting_elem);
   sema_down(&lock->semaphore);
+  //delete this lock to waiting_lock in this thread since this thread gets lock
+  list_remove(&lock->waiting_elem);
   lock->holder = thread_current ();
   //add lock to lock list of holder
   list_push_back(&thread_current()->lock_list, &lock->elem);
 }
 
-void lock_priority_donate(struct lock *lock){
-	struct thread *t = lock->holder;
-	if(t != NULL){
-		if(t->priority <= thread_get_priority()){
-			t->priority = thread_get_priority();
+void lock_priority_donate(struct lock *lock, struct thread *t){
+	struct thread *holder = lock->holder;
+	if(holder != NULL){
+		//if holder has low priority than current thread, donate current priority to holder
+		if(holder->priority <= t->priority){
+			holder->priority = t->priority;
+			//nested donate case
+			if(!list_empty(&holder->waiting_lock)){
+				struct list_elem *e;
+				for(e=list_begin(&holder->waiting_lock); e!=list_end(&holder->waiting_lock); e=list_next(e)){
+					struct lock *l = list_entry(e, struct lock, waiting_elem);
+					struct thread *temp = l->holder;
+					if(temp->priority < t->priority)
+						temp->priority = t->priority;
+				}
+			}
 		}
 	}
 }

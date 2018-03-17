@@ -109,6 +109,9 @@ struct thread
 
 	//to save locks that this thread holds
 	struct list lock_list;
+
+	//to save locks that this thread is waiting
+	struct list waiting_lock;
   };
 
 

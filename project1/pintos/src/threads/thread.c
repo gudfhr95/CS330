@@ -498,6 +498,8 @@ init_thread (struct thread *t, const char *name, int priority)
   t->first_priority = priority;
   //init lock list
   list_init(&t->lock_list);
+  //init waiting_lock
+  list_init(&t->waiting_lock);
   list_push_back (&all_list, &t->allelem);
 }
 
