@@ -1,2 +1,2 @@
 # CS330
-KAIST CS330 Operating System Projects
+KAIST CS330 Operating System PintOS Projects
