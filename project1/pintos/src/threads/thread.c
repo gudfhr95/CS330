@@ -348,7 +348,8 @@ thread_foreach (thread_action_func *func, void *aux)
 void
 thread_set_priority (int new_priority) 
 {
-  thread_current ()->priority = new_priority;
+  if(list_empty(&thread_current()->lock_list))
+  	thread_current ()->priority = new_priority;
   //set first priority as first priority
   thread_current ()->first_priority = new_priority;
   //sort ready list in descending order
@@ -357,8 +358,9 @@ thread_set_priority (int new_priority)
   struct list_elem *e = list_begin(&ready_list);
   struct thread *t = list_entry(e, struct thread, elem);
   //if highest priority ready thread is bigger than current priority -> yield
-  if(thread_current()->priority < t->priority)
+  if(thread_current()->priority < t->priority){
 	  thread_yield();
+  }
 }
 
 // to sort priority in descending order
