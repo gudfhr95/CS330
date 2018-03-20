@@ -24,12 +24,6 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
-//to init sleep thread list
-struct list sleep_list;
-
-//make list_elem_func to sort sleep list
-static bool less_order(const struct list_elem *a, const struct list_elem *b, void *aux);
-
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
@@ -43,8 +37,6 @@ timer_init (void)
 {
   pit_configure_channel (0, 2, TIMER_FREQ);
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
-  list_init(&sleep_list);
-  printf("sleep list init\n");
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -97,23 +89,11 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  if(ticks>0){
-  	int64_t start = timer_ticks ();
+  int64_t start = timer_ticks ();
 
- 	 //disable interrupt
-	enum intr_level old_level = intr_disable();
-	 //get current thread
-  	struct thread *current_thread = thread_current();
-  	 //set ticks to current thread
-  	current_thread->wakeup_tick = start + ticks;
-  	 //push thread to sleep thread and sort with ascending order
-  	list_push_back(&sleep_list, &current_thread->elem);
-  	list_sort(&sleep_list,less_order,NULL);
- 	//block thread
-	thread_block();
- 	//enable interrupt
-	intr_set_level(old_level);
-  }
+  ASSERT (intr_get_level () == INTR_ON);
+  while (timer_elapsed (start) < ticks) 
+    thread_yield ();
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -185,46 +165,13 @@ timer_print_stats (void)
 {
   printf ("Timer: %"PRId64" ticks\n", timer_ticks ());
 }
-
+
 /* Timer interrupt handler. */
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
-  timer_wakeup();
   thread_tick ();
-}
-
-//make list_less_func to sort in less order in tick and priority
-static bool less_order(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED){
-	struct thread *t1 = list_entry(a, struct thread, elem);
-	struct thread *t2 = list_entry(b, struct thread, elem);
-	
-	if(t1->wakeup_tick == t2->wakeup_tick)
-		return t1->priority > t2->priority;
-	else
-		return (t1->wakeup_tick) < (t2->wakeup_tick);
-}
-
-//to wakeup timer
-void timer_wakeup(void){
-	//do infinite loop to wake up simultaneously
-	while(true){
-		if(!list_empty(&sleep_list)){
-			//get first element of sleep_list
-			struct list_elem *e = list_front(&sleep_list);
-			struct thread *t = list_entry(e, struct thread, elem);
-			//if wakeup tick is smaller than OS tick, wake up and unblock thread
-			if(t->wakeup_tick <= timer_ticks()){
-				list_pop_front(&sleep_list);
-				thread_unblock(t);
-			}
-			else
-				break;
-		}
-		else
-			break;
-	}
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer

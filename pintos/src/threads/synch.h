@@ -9,7 +9,6 @@ struct semaphore
   {
     unsigned value;             /* Current value. */
     struct list waiters;        /* List of waiting threads. */
-	struct list owner;  
   };
 
 void sema_init (struct semaphore *, unsigned value);
@@ -21,8 +20,6 @@ void sema_self_test (void);
 /* Lock. */
 struct lock 
   {
-	struct list_elem elem;      //to add lock_list of thread
-	struct list_elem waiting_elem; //to add waiting_lock of thread
     struct thread *holder;      /* Thread holding lock (for debugging). */
     struct semaphore semaphore; /* Binary semaphore controlling access. */
   };
@@ -32,8 +29,6 @@ void lock_acquire (struct lock *);
 bool lock_try_acquire (struct lock *);
 void lock_release (struct lock *);
 bool lock_held_by_current_thread (const struct lock *);
-void lock_priority_donate(struct lock *, struct thread *);
-void lock_priority_giveback(struct lock *);
 
 /* Condition variable. */
 struct condition 
@@ -41,7 +36,6 @@ struct condition
     struct list waiters;        /* List of waiting threads. */
   };
 
-bool high_priority_order_sema(const struct list_elem *, const struct list_elem * , void * UNUSED);
 void cond_init (struct condition *);
 void cond_wait (struct condition *, struct lock *);
 void cond_signal (struct condition *, struct lock *);

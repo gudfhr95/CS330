@@ -100,28 +100,13 @@ struct thread
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
-
-	//set tick timer to wake up;
-	int64_t wakeup_tick;
-
-	//set last priority
-	int first_priority;
-
-	//to save locks that this thread holds
-	struct list lock_list;
-
-	//to save locks that this thread is waiting
-	struct list waiting_lock;
   };
-
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.
    Controlled by kernel command-line option "-o mlfqs". */
 extern bool thread_mlfqs;
 
-//to sort list with descending priority order
-bool high_priority_order(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED);
 void thread_init (void);
 void thread_start (void);
 
@@ -140,7 +125,6 @@ const char *thread_name (void);
 
 void thread_exit (void) NO_RETURN;
 void thread_yield (void);
-
 
 /* Performs some operation on thread t, given auxiliary data AUX. */
 typedef void thread_action_func (struct thread *t, void *aux);

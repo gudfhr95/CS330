@@ -208,10 +208,7 @@ thread_create (const char *name, int priority,
 
   /* Add to run queue. */
   thread_unblock (t);
-  //if created thread has higher priority, change running thread
-  if(priority > thread_current()->priority){
-	  thread_yield();
-  }
+
   return tid;
 }
 
@@ -321,8 +318,6 @@ thread_yield (void)
   if (cur != idle_thread) 
     list_push_back (&ready_list, &cur->elem);
   cur->status = THREAD_READY;
-  //order ready list as priority
-  list_sort(&ready_list, high_priority_order, NULL);
   schedule ();
   intr_set_level (old_level);
 }
@@ -348,27 +343,7 @@ thread_foreach (thread_action_func *func, void *aux)
 void
 thread_set_priority (int new_priority) 
 {
-  if(list_empty(&thread_current()->lock_list))
-  	thread_current ()->priority = new_priority;
-  //set first priority as first priority
-  thread_current ()->first_priority = new_priority;
-  //sort ready list in descending order
-  list_sort(&ready_list, high_priority_order, NULL);
-  //get highest priority thread
-  struct list_elem *e = list_begin(&ready_list);
-  struct thread *t = list_entry(e, struct thread, elem);
-  //if highest priority ready thread is bigger than current priority -> yield
-  if(thread_current()->priority < t->priority){
-	  thread_yield();
-  }
-}
-
-// to sort priority in descending order
-bool high_priority_order(const struct list_elem *a, const struct list_elem *b, void *aux UNUSED){
-	struct thread *t1 = list_entry(a, struct thread, elem);
-	struct thread *t2 = list_entry(b, struct thread, elem);
-
-	return t1->priority > t2->priority;
+  thread_current ()->priority = new_priority;
 }
 
 /* Returns the current thread's priority. */
@@ -408,7 +383,7 @@ thread_get_recent_cpu (void)
   /* Not yet implemented. */
   return 0;
 }
-
+
 /* Idle thread.  Executes when no other thread is ready to run.
 
    The idle thread is initially put on the ready list by
@@ -494,14 +469,6 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
-  //init wakeup tick to 0
-  t->wakeup_tick = 0;
-  //set first priority as current priority
-  t->first_priority = priority;
-  //init lock list
-  list_init(&t->lock_list);
-  //init waiting_lock
-  list_init(&t->waiting_lock);
   list_push_back (&all_list, &t->allelem);
 }
 
@@ -528,10 +495,8 @@ next_thread_to_run (void)
 {
   if (list_empty (&ready_list))
     return idle_thread;
-  else{
-	
+  else
     return list_entry (list_pop_front (&ready_list), struct thread, elem);
-  }
 }
 
 /* Completes a thread switch by activating the new thread's page
