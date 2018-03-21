@@ -90,6 +90,9 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
+  while(1){
+
+  }
   return -1;
 }
 
@@ -318,7 +321,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
         }
     }
 
-  //pass_argument(file_name, esp);
   /* Set up stack. */
   if (!setup_stack (esp))
     goto done;
@@ -369,7 +371,6 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   uintptr_t temp_esp;
 
   int i;
-  
 
   //put argv from 0x30000000
   for(i=(*argc)-1; i>=0; i--){
@@ -384,14 +385,17 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   *esp -= (4+remainder);
   memset(*esp, 0, 4+remainder);
 
-  //save addr of argv in memory space
+  //if argc is 1, do not decrement *esp since it has no argv
   *esp -= 4;
+  temp_esp = (uintptr_t)(*esp);
+  //save addr of argv in memory space
   for(i=0; i<(*argc)-1; i++){
     memcpy((char*)(*esp),(char*)&addr_list[i],sizeof(int));
     temp_esp = (uintptr_t)(*esp);
     *esp -= 4;
   }
 
+  printf("current ptr : %p\n", temp_esp);
   //save ptr of argv in memory space
   memcpy((char*)(*esp), (char*)&(temp_esp), sizeof(int));
   *esp -= 4;
