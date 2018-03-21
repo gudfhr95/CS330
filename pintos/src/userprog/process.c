@@ -20,6 +20,8 @@
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
+static void parse_file_name(char *file_name, char *argv[], int *argc);
+static void pass_argument(char *argv[], int *argc, void **esp);
 
 /* Starts a new thread running a user program loaded from
    FILENAME.  The new thread may be scheduled (and may even exit)
@@ -195,6 +197,10 @@ struct Elf32_Phdr
 #define PF_W 2          /* Writable. */
 #define PF_R 4          /* Readable. */
 
+
+#define FILE_NAME_MAX_LENGTH 100
+#define ARGS_MAX_LENGTH 25
+
 static bool setup_stack (void **esp);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
 static bool load_segment (struct file *file, off_t ofs, uint8_t *upage,
@@ -214,6 +220,16 @@ load (const char *file_name, void (**eip) (void), void **esp)
   off_t file_ofs;
   bool success = false;
   int i;
+  
+  
+  char temp_file_name[FILE_NAME_MAX_LENGTH];
+  char *argv[ARGS_MAX_LENGTH];
+  int argc = 0;
+  //copy file name to temp file name to parse it
+  strlcpy(temp_file_name, file_name, FILE_NAME_MAX_LENGTH);
+
+  //parse file name and save it to argv
+  parse_file_name(temp_file_name, argv, &argc);
 
   /* Allocate and activate page directory. */
   t->pagedir = pagedir_create ();
@@ -222,7 +238,8 @@ load (const char *file_name, void (**eip) (void), void **esp)
   process_activate ();
 
   /* Open executable file. */
-  file = filesys_open (file_name);
+  //open parsed file name
+  file = filesys_open (argv[0]);
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
@@ -301,12 +318,15 @@ load (const char *file_name, void (**eip) (void), void **esp)
         }
     }
 
+  //pass_argument(file_name, esp);
   /* Set up stack. */
   if (!setup_stack (esp))
     goto done;
 
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
+
+  pass_argument(argv, &argc, esp);
 
   success = true;
 
@@ -319,6 +339,72 @@ load (const char *file_name, void (**eip) (void), void **esp)
 /* load() helpers. */
 
 static bool install_page (void *upage, void *kpage, bool writable);
+
+
+//to parse file name
+static void parse_file_name(char *file_name, char *argv[], int *argc){
+  char *ret_ptr;
+  char *next_ptr;
+
+  ret_ptr = strtok_r((char *)file_name, " ", &next_ptr);
+
+  while(ret_ptr){
+    argv[(*argc)] = ret_ptr;
+    ret_ptr = strtok_r(NULL, " ", &next_ptr);
+    //argc number is one less than argc
+    (*argc)++;
+
+    //ARGV NULL CASE
+    if(*argc == 1 && ret_ptr == NULL){
+      argv[(*argc)] = ret_ptr;
+      break;
+    }
+  }
+}
+
+//to pass argv to the esp
+static void pass_argument(char *argv[], int *argc, void **esp){
+
+  uintptr_t addr_list[(*argc)];  //save addr list
+  uintptr_t temp_esp;
+
+  int i;
+  
+
+  //put argv from 0x30000000
+  for(i=(*argc)-1; i>=0; i--){
+    //copy argv from esp and save addr to addr list
+    *esp -= strlen(argv[i])+1;
+    memcpy(*esp, argv[i], strlen(argv[i])+1);
+    addr_list[(*argc)-1 - i] = (uintptr_t)(*esp);
+  }
+
+  //padding
+  int remainder = (int)(*esp)%4;
+  *esp -= (4+remainder);
+  memset(*esp, 0, 4+remainder);
+
+  //save addr of argv in memory space
+  *esp -= 4;
+  for(i=0; i<(*argc)-1; i++){
+    memcpy((char*)(*esp),(char*)&addr_list[i],sizeof(int));
+    temp_esp = (uintptr_t)(*esp);
+    *esp -= 4;
+  }
+
+  //save ptr of argv in memory space
+  memcpy((char*)(*esp), (char*)&(temp_esp), sizeof(int));
+  *esp -= 4;
+
+  //save argc in memory space
+  memcpy((char*)(*esp),(char*)&(*argc),sizeof(int));
+  *esp -=4;
+
+  //return addr
+  memset(*esp, 0, 4);
+
+  hex_dump(0, *esp, 0xc0000000 - (uintptr_t)(*esp), true);
+}
 
 /* Checks whether PHDR describes a valid, loadable segment in
    FILE and returns true if so, false otherwise. */
