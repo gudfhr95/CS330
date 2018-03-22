@@ -357,8 +357,9 @@ static void parse_file_name(char *file_name, char *argv[], int *argc){
     (*argc)++;
 
     //ARGV NULL CASE
-    if(*argc == 1 && ret_ptr == NULL){
+    if(ret_ptr == NULL){
       argv[(*argc)] = ret_ptr;
+      argc++;
       break;
     }
   }
@@ -367,7 +368,8 @@ static void parse_file_name(char *file_name, char *argv[], int *argc){
 //to pass argv to the esp
 static void pass_argument(char *argv[], int *argc, void **esp){
 
-  uintptr_t addr_list[(*argc)];  //save addr list
+  printf("argc : %d\n", (*argc));
+  uintptr_t addr_list[(*argc)+1];  //save addr list
   uintptr_t temp_esp;
 
   int i;
@@ -378,9 +380,10 @@ static void pass_argument(char *argv[], int *argc, void **esp){
     *esp -= strlen(argv[i])+1;
     memcpy(*esp, argv[i], strlen(argv[i])+1);
     addr_list[(*argc)-1 - i] = (uintptr_t)(*esp);
+    printf("%d: %p\n", (*argc)-1-i, *esp);
   }
 
-  //padding
+  //padding + argv[argc]
   int remainder = (int)(*esp)%4;
   *esp -= (4+remainder);
   memset(*esp, 0, 4+remainder);
@@ -389,19 +392,19 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   *esp -= 4;
   temp_esp = (uintptr_t)(*esp);
   //save addr of argv in memory space
-  for(i=0; i<(*argc)-1; i++){
+  for(i=0; i<(*argc); i++){
     memcpy((char*)(*esp),(char*)&addr_list[i],sizeof(int));
     temp_esp = (uintptr_t)(*esp);
     *esp -= 4;
   }
 
-  printf("current ptr : %p\n", temp_esp);
   //save ptr of argv in memory space
   memcpy((char*)(*esp), (char*)&(temp_esp), sizeof(int));
   *esp -= 4;
 
   //save argc in memory space
   memcpy((char*)(*esp),(char*)&(*argc),sizeof(int));
+  
   *esp -=4;
 
   //return addr

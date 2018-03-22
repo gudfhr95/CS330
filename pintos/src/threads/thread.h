@@ -100,6 +100,13 @@ struct thread
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
+
+    //exit status
+    int exit_status;
+
+    //file list of current thread
+    struct list fd_list;
+    int fd_count;
   };
 
 /* If false (default), use round-robin scheduler.
