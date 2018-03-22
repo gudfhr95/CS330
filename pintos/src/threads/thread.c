@@ -472,7 +472,7 @@ init_thread (struct thread *t, const char *name, int priority)
 
   //to init fd list
   t->fd_count = 2;
-  list_init(&t->fd_list); 
+  list_init(&t->file_list); 
   list_push_back (&all_list, &t->allelem);
 }
 

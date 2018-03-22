@@ -105,7 +105,7 @@ struct thread
     int exit_status;
 
     //file list of current thread
-    struct list fd_list;
+    struct list file_list;
     int fd_count;
   };
 
