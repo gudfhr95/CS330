@@ -19,7 +19,6 @@ static void syscall_handler (struct intr_frame *);
 
 
 static void get_args(int *esp, int *args);
-static void check_addr(const void *vaddr);
 static struct file *get_file_by_fd(int fd);
 
 static struct lock file_lock;
@@ -44,7 +43,6 @@ syscall_handler (struct intr_frame *f UNUSED)
 {
   
   int *esp= f->esp;
-  check_addr(esp);
   int syscall = *esp;
   int args[3];
   get_args(esp, args);
@@ -108,6 +106,8 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   	case SYS_SEEK:
   		printf("\nSYS_SEEK\n");
+      lock_acquire(&file_lock);
+      seek(args[0], (unsigned) args[1]);
   		break;
 
   	case SYS_TELL:
@@ -135,8 +135,6 @@ void exit (int status){
   thread_current()->exit_status = status;
   thread_exit();
 }
-
-
 
 
 pid_t exec (const char *file){
@@ -234,8 +232,6 @@ int read (int fd, void *buffer, unsigned length){
 
 
 int write (int fd, const void *buffer, unsigned length){
-  check_addr(buffer);
-
   //STDOUT CASE
   if(fd == 1){
     putbuf(buffer, length);
@@ -259,15 +255,24 @@ int write (int fd, const void *buffer, unsigned length){
   }
 }
 
+void seek (int fd, unsigned position){
+  struct file *f = get_file_by_fd(fd);
+  //if no fd in file_list
+  if(f == NULL)
+    lock_release(&file_lock);
+  else{
+    file_seek(f, position);
+    lock_release(&file_lock);
+  }
+}
 
+
+unsigned tell (int fd){
+  struct file *f = get_file_by_fd(fd);
+
+}
 
 /*
-void seek (int fd, unsigned position){
-
-}
-unsigned tell (int fd){
-
-}
 void close (int fd){
 
 }
@@ -280,23 +285,9 @@ static void get_args(int *esp, int *args){
   int *temp_ptr;
   for(i=0; i<3; i++){
     temp_ptr = esp + 1 + i;
-    check_addr((const void *) temp_ptr);
     args[i] = *temp_ptr;
   }
-  /*
-  for(i=0; i<count; i++){
-    printf("%d: %p\n", i, args[i]);
-  }
-  */
 }
-
-static void check_addr(const void *vaddr){
-	if(is_kernel_vaddr(vaddr)){
-		printf("not valid addr : %p\n", vaddr);
-	}
-}
-
-
 
 //get current thread's file list and find file by fd
 static struct file *get_file_by_fd(int fd){
