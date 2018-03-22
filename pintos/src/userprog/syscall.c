@@ -18,8 +18,10 @@
 static void syscall_handler (struct intr_frame *);
 
 
-static void get_args(int *esp, int *args);
+void check_addr(void* vaddr);
+static uintptr_t* get_arg(void* esp, int num);
 static struct file *get_file_by_fd(int fd);
+
 
 static struct lock file_lock;
 
@@ -42,13 +44,10 @@ static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
   
-  int *esp= f->esp;
+  uintptr_t* esp= f->esp;
   int syscall = *esp;
-  int args[3];
-  get_args(esp, args);
-  //printf ("system call!\n");
-  //printf("current esp : %p\n", esp);
-  //printf("current esp + 1 : %p\n", esp+1);
+
+  //hex_dump(f->esp, f->esp, 100, 1);
 
   switch(syscall){
   	case SYS_HALT:
@@ -58,12 +57,12 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_EXIT:
   		//printf("\nSYS_EXIT\n");
       lock_acquire(&file_lock);
-      exit(args[0]);
+      exit((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_EXEC:
   		//printf("\nSYS_EXEC\n");
-      f->eax = exec((const char*) args[0]);
+      f->eax = exec((const char*) *get_arg(esp, 0));
   		break;
 
   	case SYS_WAIT:
@@ -73,53 +72,53 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_CREATE:
   		//printf("\nSYS_CREATE\n");
       lock_acquire(&file_lock);
-      f->eax = create((const char *)args[0], args[1]);
+      f->eax = create((const char *) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_REMOVE:
   		//printf("\nSYS_REMOVE\n");
       lock_acquire(&file_lock);
-      f->eax = remove((const char *)args[0]);
+      f->eax = remove((const char *) *get_arg(esp, 0));
   		break;
 
   	case SYS_OPEN:
   		//printf("\nSYS_OPEN\n");
       lock_acquire(&file_lock);
-      f->eax = open((const char *)args[0]);
+      f->eax = open((const char *) *get_arg(esp, 0));
   		break;
 
   	case SYS_FILESIZE:
   		//printf("\nSYS_FILESIZE\n");
       lock_acquire(&file_lock);
-      f->eax = filesize(args[0]);
+      f->eax = filesize((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_READ:
   		//printf("\nSYS_READ\n");
-      f->eax = read(args[0], (void *) args[1], (unsigned) args[2]);
+      f->eax = read((int) *get_arg(esp, 0), (void *) *get_arg(esp, 1), (unsigned) *get_arg(esp, 2));
   		break;
 
   	case SYS_WRITE:
   		//printf("\nSYS_WRITE\n");
-      f->eax = write(args[0], (void *) args[1], (unsigned) args[2]);
+      f->eax = write((int) *get_arg(esp, 0), (void *) *get_arg(esp, 1), (unsigned) *get_arg(esp, 2));
   		break;
 
   	case SYS_SEEK:
   		//printf("\nSYS_SEEK\n");
       lock_acquire(&file_lock);
-      seek(args[0], (unsigned) args[1]);
+      seek((int) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_TELL:
   		//printf("\nSYS_TELL\n");
       lock_acquire(&file_lock);
-      tell(args[0]);
+      tell((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_CLOSE:
   		//printf("\nSYS_CLOSE\n");
       lock_acquire(&file_lock);
-      close(args[0]);
+      close((int) *get_arg(esp, 0));
   		break;
   }
 
@@ -141,7 +140,7 @@ void exit (int status){
     struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
     file_close(fle->f);
     list_remove(&fle->elem);
-    free(fle);
+    //free(fle);
   }
 
   t->exit_status = status;
@@ -185,7 +184,9 @@ bool remove (const char *file){
 
 int open (const char *file){
   //open file
+
   struct file *f = filesys_open(file);
+  //printf("FILE : %p\n", f);
   //if file is null return error
   if(f == NULL){
     lock_release(&file_lock);
@@ -194,7 +195,7 @@ int open (const char *file){
   //if file is not null
   else{
     //make file list elem and put it to file list of the thread and return fd
-    struct file_list_elem *fle = malloc(sizeof(struct file_list_elem));
+    struct file_list_elem *fle = malloc(sizeof *fle);
     fle->f = f;
     fle->fd = thread_current()->fd_count;
     thread_current()->fd_count++;
@@ -312,14 +313,19 @@ void close (int fd){
   lock_release(&file_lock);
 }
 
-//to get arguments of current esp
-static void get_args(int *esp, int *args){
-  int i;
-  int *temp_ptr;
-  for(i=0; i<3; i++){
-    temp_ptr = esp + 1 + i;
-    args[i] = *temp_ptr;
+
+//check whether vaddr is valid addr, if not, exit
+void check_addr(void* vaddr){
+  if(is_kernel_vaddr(vaddr)){
+    exit(-1);
   }
+}
+
+//to get arguments of current esp
+static uintptr_t* get_arg(void* esp, int num){
+  void* vaddr = esp + 4 + 4*num;
+  check_addr(vaddr);
+  return (uintptr_t *) vaddr;
 }
 
 //get current thread's file list and find file by fd

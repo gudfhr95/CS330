@@ -419,7 +419,7 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   //return addr
   memset(*esp, 0, 4);
 
-  //hex_dump(0, *esp, 0xc0000000 - (uintptr_t)(*esp), true);
+  //hex_dump(*esp, *esp, 100, 1);
 }
 
 /* Checks whether PHDR describes a valid, loadable segment in

@@ -97,12 +97,6 @@ struct thread
 #ifdef USERPROG
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
-#endif
-
-    /* Owned by thread.c. */
-    unsigned magic;                     /* Detects stack overflow. */
-
-
     //exit status
     int exit_status;
 
@@ -118,6 +112,10 @@ struct thread
     struct list_elem childelem;
 
     struct semaphore sema;
+#endif
+
+    /* Owned by thread.c. */
+    unsigned magic;                     /* Detects stack overflow. */
   };
 
 
