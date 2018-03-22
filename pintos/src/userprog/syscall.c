@@ -57,7 +57,7 @@ syscall_handler (struct intr_frame *f UNUSED)
   		break;
   	case SYS_EXIT:
   		printf("\nSYS_EXIT\n");
-      
+      lock_acquire(&file_lock);
       exit(args[0]);
   		break;
 
@@ -112,10 +112,14 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   	case SYS_TELL:
   		printf("\nSYS_TELL\n");
+      lock_acquire(&file_lock);
+      tell(args[0]);
   		break;
 
   	case SYS_CLOSE:
   		printf("\nSYS_CLOSE\n");
+      lock_acquire(&file_lock);
+      close(args[0]);
   		break;
   }
 
@@ -130,9 +134,18 @@ void halt (void){
 
 
 void exit (int status){
-  //need to do file close
+  struct thread *t = thread_current();
+  //close all file opened in current thread
+  struct list_elem *e;
+  for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
+    struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
+    file_close(fle->f);
+    list_remove(&fle->elem);
+    free(fle);
+  }
 
-  thread_current()->exit_status = status;
+  t->exit_status = status;
+  lock_release(&file_lock);
   thread_exit();
 }
 
@@ -269,15 +282,32 @@ void seek (int fd, unsigned position){
 
 unsigned tell (int fd){
   struct file *f = get_file_by_fd(fd);
-
+  //if no fd in file system
+  if(f == NULL){
+    lock_release(&file_lock);
+    return -1;
+  }
+  else{
+    off_t temp = file_tell(f);
+    lock_release(&file_lock);
+    return temp;
+  }
 }
 
-/*
 void close (int fd){
-
+  struct thread *t = thread_current();
+  struct list_elem *e;
+  for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
+    struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
+    if(fle->fd == fd){
+      file_close(fle->f);
+      list_remove(&fle->elem);
+      free(fle);
+      break;
+    }
+  }
+  lock_release(&file_lock);
 }
-*/
-
 
 //to get arguments of current esp
 static void get_args(int *esp, int *args){
@@ -292,15 +322,13 @@ static void get_args(int *esp, int *args){
 //get current thread's file list and find file by fd
 static struct file *get_file_by_fd(int fd){
   struct thread *t = thread_current();
-  struct list file_list = t->file_list;
   struct list_elem *e;
-  for(e=list_begin(&file_list); e!=list_end(&file_list); e=list_next(e)){
+  for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
     struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
     if(fle->fd == fd){
       return fle->f;
     }
   }
-
   return NULL;
 }
 
