@@ -13,6 +13,7 @@
 #include <string.h>
 #include "threads/malloc.h"
 #include "userprog/process.h"
+#include "devices/input.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -73,10 +74,14 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   	case SYS_CREATE:
   		printf("\nSYS_CREATE\n");
+      lock_acquire(&file_lock);
+      f->eax = create((const char *)args[0], args[1]);
   		break;
 
   	case SYS_REMOVE:
   		printf("\nSYS_REMOVE\n");
+      lock_acquire(&file_lock);
+      f->eax = remove((const char *)args[0]);
   		break;
 
   	case SYS_OPEN:
@@ -93,14 +98,12 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   	case SYS_READ:
   		printf("\nSYS_READ\n");
+      f->eax = read(args[0], (void *) args[1], (unsigned) args[2]);
   		break;
 
   	case SYS_WRITE:
   		printf("\nSYS_WRITE\n");
-      //get_args(esp, args, 3);
-      lock_acquire(&file_lock);
       f->eax = write(args[0], (void *) args[1], (unsigned) args[2]);
-      lock_release(&file_lock);
   		break;
 
   	case SYS_SEEK:
@@ -149,26 +152,34 @@ pid_t exec (const char *file){
 int wait (pid_t){
 
 }
+*/
 
 bool create (const char *file, unsigned initial_size){
-
+  //create file
+  bool b = filesys_create(file, initial_size);
+  lock_release(&file_lock);
+  return b;
 }
 
 bool remove (const char *file){
-
+  //remove file
+  bool b = filesys_remove(file);
+  lock_release(&file_lock);
+  return b;
 }
-*/
 
 
 int open (const char *file){
-  check_addr((const void *) file);
+  //open file
   struct file *f = filesys_open(file);
-  
+  //if file is null return error
   if(f == NULL){
     lock_release(&file_lock);
     return -1;
   }
+  //if file is not null
   else{
+    //make file list elem and put it to file list of the thread and return fd
     struct file_list_elem *fle = malloc(sizeof(struct file_list_elem));
     fle->f = f;
     fle->fd = thread_current()->fd_count;
@@ -178,8 +189,6 @@ int open (const char *file){
     return fle->fd;
   }
 }
-
-
 
 int filesize (int fd){
   struct file *f = get_file_by_fd(fd);
@@ -195,26 +204,59 @@ int filesize (int fd){
   }
 }
 
-/*
-int read (int fd, void *buffer, unsigned length){
-  check_addr(buffer);
-  if(fd == 0){
 
+int read (int fd, void *buffer, unsigned length){
+  unsigned int i;
+  //STDIN CASE
+  if(fd == 0){
+    //put input_getc result in buffer
+    for(i=0; i<length; i++){
+      ((char *)buffer)[i] = input_getc();
+    }
+    return length;
+  }
+  else{
+    lock_acquire(&file_lock);
+    struct file *f = get_file_by_fd(fd);
+    //if no file in file_list
+    if(f == NULL){
+      lock_release(&file_lock);
+      return -1;
+    }
+    //read file f
+    else{
+      off_t result = file_read(f, buffer, length);
+      lock_release(&file_lock);
+      return result;
+    }
   }
 }
-*/
-
 
 
 int write (int fd, const void *buffer, unsigned length){
   check_addr(buffer);
+
+  //STDOUT CASE
   if(fd == 1){
     putbuf(buffer, length);
+    return length;
   }
-  else{
 
+  else{
+    lock_acquire(&file_lock);
+    struct file *f = get_file_by_fd(fd);
+    //if no file in file_list
+    if(f == NULL){
+      lock_release(&file_lock);
+      return -1;
+    }
+    //write at file f
+    else{
+      off_t result = file_write(f, buffer, length);
+      lock_release(&file_lock);
+      return result;
+    }
   }
-  return length;
 }
 
 
