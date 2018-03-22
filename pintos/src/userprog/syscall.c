@@ -52,72 +52,72 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   switch(syscall){
   	case SYS_HALT:
-  		printf("\nSYS_HALT\n");
+  		//printf("\nSYS_HALT\n");
       halt();
   		break;
   	case SYS_EXIT:
-  		printf("\nSYS_EXIT\n");
+  		//printf("\nSYS_EXIT\n");
       lock_acquire(&file_lock);
       exit(args[0]);
   		break;
 
   	case SYS_EXEC:
-  		printf("\nSYS_EXEC\n");
+  		//printf("\nSYS_EXEC\n");
       f->eax = exec((const char*) args[0]);
   		break;
 
   	case SYS_WAIT:
-  		printf("\nSYS_WAIT\n");
+  		//printf("\nSYS_WAIT\n");
   		break;
 
   	case SYS_CREATE:
-  		printf("\nSYS_CREATE\n");
+  		//printf("\nSYS_CREATE\n");
       lock_acquire(&file_lock);
       f->eax = create((const char *)args[0], args[1]);
   		break;
 
   	case SYS_REMOVE:
-  		printf("\nSYS_REMOVE\n");
+  		//printf("\nSYS_REMOVE\n");
       lock_acquire(&file_lock);
       f->eax = remove((const char *)args[0]);
   		break;
 
   	case SYS_OPEN:
-  		printf("\nSYS_OPEN\n");
+  		//printf("\nSYS_OPEN\n");
       lock_acquire(&file_lock);
       f->eax = open((const char *)args[0]);
   		break;
 
   	case SYS_FILESIZE:
-  		printf("\nSYS_FILESIZE\n");
+  		//printf("\nSYS_FILESIZE\n");
       lock_acquire(&file_lock);
       f->eax = filesize(args[0]);
   		break;
 
   	case SYS_READ:
-  		printf("\nSYS_READ\n");
+  		//printf("\nSYS_READ\n");
       f->eax = read(args[0], (void *) args[1], (unsigned) args[2]);
   		break;
 
   	case SYS_WRITE:
-  		printf("\nSYS_WRITE\n");
+  		//printf("\nSYS_WRITE\n");
       f->eax = write(args[0], (void *) args[1], (unsigned) args[2]);
   		break;
 
   	case SYS_SEEK:
-  		printf("\nSYS_SEEK\n");
+  		//printf("\nSYS_SEEK\n");
       lock_acquire(&file_lock);
       seek(args[0], (unsigned) args[1]);
   		break;
 
   	case SYS_TELL:
-  		printf("\nSYS_TELL\n");
+  		//printf("\nSYS_TELL\n");
       lock_acquire(&file_lock);
       tell(args[0]);
   		break;
 
   	case SYS_CLOSE:
-  		printf("\nSYS_CLOSE\n");
+  		//printf("\nSYS_CLOSE\n");
       lock_acquire(&file_lock);
       close(args[0]);
   		break;
@@ -146,6 +146,9 @@ void exit (int status){
 
   t->exit_status = status;
   lock_release(&file_lock);
+  printf("%s: exit(%d)\n", thread_current()->name, status);
+  struct thread *parent = t->parent;
+  sema_up(&parent->sema);
   thread_exit();
 }
 

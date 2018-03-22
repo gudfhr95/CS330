@@ -17,8 +17,14 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/synch.h"
 
 static thread_func start_process NO_RETURN;
+
+
+#define FILE_NAME_MAX_LENGTH 100
+#define ARGS_MAX_LENGTH 25
+
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 static void parse_file_name(char *file_name, char *argv[], int *argc);
 static void pass_argument(char *argv[], int *argc, void **esp);
@@ -40,8 +46,18 @@ process_execute (const char *file_name)
     return TID_ERROR;
   strlcpy (fn_copy, file_name, PGSIZE);
 
+
+  //variable to parse file name
+  char temp_file_name[FILE_NAME_MAX_LENGTH];
+  char *argv[ARGS_MAX_LENGTH];
+  int argc = 0;
+  strlcpy(temp_file_name, file_name, FILE_NAME_MAX_LENGTH);
+
+  //parse file name and save it to argv
+  parse_file_name(temp_file_name, argv, &argc);
+
   /* Create a new thread to execute FILE_NAME. */
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+  tid = thread_create (argv[0], PRI_DEFAULT, start_process, fn_copy);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -90,9 +106,7 @@ start_process (void *file_name_)
 int
 process_wait (tid_t child_tid UNUSED) 
 {
-  while(1){
-
-  }
+  sema_down(&thread_current()->sema);
   return -1;
 }
 
@@ -200,9 +214,6 @@ struct Elf32_Phdr
 #define PF_W 2          /* Writable. */
 #define PF_R 4          /* Readable. */
 
-
-#define FILE_NAME_MAX_LENGTH 100
-#define ARGS_MAX_LENGTH 25
 
 static bool setup_stack (void **esp);
 static bool validate_segment (const struct Elf32_Phdr *, struct file *);
@@ -368,7 +379,6 @@ static void parse_file_name(char *file_name, char *argv[], int *argc){
 //to pass argv to the esp
 static void pass_argument(char *argv[], int *argc, void **esp){
 
-  printf("argc : %d\n", (*argc));
   uintptr_t addr_list[(*argc)+1];  //save addr list
   uintptr_t temp_esp;
 
@@ -380,7 +390,6 @@ static void pass_argument(char *argv[], int *argc, void **esp){
     *esp -= strlen(argv[i])+1;
     memcpy(*esp, argv[i], strlen(argv[i])+1);
     addr_list[(*argc)-1 - i] = (uintptr_t)(*esp);
-    printf("%d: %p\n", (*argc)-1-i, *esp);
   }
 
   //padding + argv[argc]
@@ -410,7 +419,7 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   //return addr
   memset(*esp, 0, 4);
 
-  hex_dump(0, *esp, 0xc0000000 - (uintptr_t)(*esp), true);
+  //hex_dump(0, *esp, 0xc0000000 - (uintptr_t)(*esp), true);
 }
 
 /* Checks whether PHDR describes a valid, loadable segment in
