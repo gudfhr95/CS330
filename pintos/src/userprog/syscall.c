@@ -49,8 +49,6 @@ syscall_handler (struct intr_frame *f UNUSED)
   uintptr_t* esp= f->esp;
   int syscall = *esp;
 
-  //hex_dump(f->esp, f->esp, 100, 1);
-
   switch(syscall){
   	case SYS_HALT:
       if(PRINT)
@@ -162,8 +160,11 @@ void exit (int status){
   t->exit_status = status;
   lock_release(&file_lock);
   printf("%s: exit(%d)\n", thread_current()->name, status);
+
   struct thread *parent = t->parent;
+  //wake up parent
   sema_up(&parent->child_waiting_sema);
+  //waiting for parent
   sema_down(&t->parent_waiting_sema);
   thread_exit();
 }
@@ -198,9 +199,7 @@ bool remove (const char *file){
 
 int open (const char *file){
   //open file
-
   struct file *f = filesys_open(file);
-  //printf("FILE : %p\n", f);
   //if file is null return error
   if(f == NULL){
     lock_release(&file_lock);
@@ -214,6 +213,9 @@ int open (const char *file){
     fle->fd = thread_current()->fd_count;
     thread_current()->fd_count++;
     list_push_back(&thread_current()->file_list, &fle->elem);
+    //if opened file is current thread's excutable file, deny write
+    if(!strcmp(thread_current()->name, file))
+      file_deny_write(f);
     lock_release(&file_lock);
     return fle->fd;
   }
@@ -277,7 +279,6 @@ int write (int fd, const void *buffer, unsigned length){
       lock_release(&file_lock);
       return -1;
     }
-    //write at file f
     else{
       off_t result = file_write(f, buffer, length);
       lock_release(&file_lock);
@@ -326,9 +327,6 @@ void close (int fd){
   }
   lock_release(&file_lock);
 }
-
-
-
 
 
 //check whether vaddr is valid addr, if not, exit

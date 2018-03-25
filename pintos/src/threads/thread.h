@@ -114,6 +114,7 @@ struct thread
     //for waiting child and parent
     struct semaphore child_waiting_sema;
     struct semaphore parent_waiting_sema;
+    
 #endif
 
     /* Owned by thread.c. */

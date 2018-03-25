@@ -130,18 +130,17 @@ process_wait (tid_t child_tid)
   sema_down(&t->child_waiting_sema);
 
   //remove child from child list
- 
   for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
     struct thread *child_thread = list_entry(e, struct thread, childelem);
     if(child_thread->tid == child_tid){
       list_remove(&child_thread->childelem);
       status = child_thread->exit_status;
+      //waking up waiting child
       sema_up(&child_thread->parent_waiting_sema);
       break;
     }
   }
 
-  
   return status;
 }
 
