@@ -111,7 +111,9 @@ struct thread
     struct list child_list;
     struct list_elem childelem;
 
-    struct semaphore sema;
+    //for waiting child and parent
+    struct semaphore child_waiting_sema;
+    struct semaphore parent_waiting_sema;
 #endif
 
     /* Owned by thread.c. */

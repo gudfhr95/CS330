@@ -104,10 +104,45 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid) 
 {
-  sema_down(&thread_current()->sema);
-  return -1;
+  struct thread *t = thread_current();
+  int status = -1;
+  bool is_child = false;
+  struct list_elem *e;
+
+  //if TID is invalid
+
+  //if TID was not a child of the calling process
+  for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
+    struct thread *child_thread = list_entry(e, struct thread, childelem);
+    if(child_thread->tid == child_tid){
+      is_child = true;
+      break;
+    }
+  }
+  if(!is_child){
+    return -1;
+  }
+  //if process_wait() has already been successfully called
+
+  //wait for child process to end
+  sema_down(&t->child_waiting_sema);
+
+  //remove child from child list
+ 
+  for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
+    struct thread *child_thread = list_entry(e, struct thread, childelem);
+    if(child_thread->tid == child_tid){
+      list_remove(&child_thread->childelem);
+      status = child_thread->exit_status;
+      sema_up(&child_thread->parent_waiting_sema);
+      break;
+    }
+  }
+
+  
+  return status;
 }
 
 /* Free the current process's resources. */

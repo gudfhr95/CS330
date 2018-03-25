@@ -18,6 +18,8 @@
 static void syscall_handler (struct intr_frame *);
 
 
+#define PRINT 0    //for debugging
+
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
 static struct file *get_file_by_fd(int fd);
@@ -51,72 +53,86 @@ syscall_handler (struct intr_frame *f UNUSED)
 
   switch(syscall){
   	case SYS_HALT:
-  		//printf("\nSYS_HALT\n");
+      if(PRINT)
+  		  printf("\nSYS_HALT\n");
       halt();
   		break;
   	case SYS_EXIT:
-  		//printf("\nSYS_EXIT\n");
+      if(PRINT)
+  		  printf("\nSYS_EXIT\n");
       lock_acquire(&file_lock);
       exit((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_EXEC:
-  		//printf("\nSYS_EXEC\n");
+      if(PRINT)
+  		  printf("\nSYS_EXEC\n");
       f->eax = exec((const char*) *get_arg(esp, 0));
   		break;
 
   	case SYS_WAIT:
-  		//printf("\nSYS_WAIT\n");
+      if(PRINT)
+  		  printf("\nSYS_WAIT\n");
+      f->eax = wait((pid_t) *get_arg(esp,0));
   		break;
 
   	case SYS_CREATE:
-  		//printf("\nSYS_CREATE\n");
+      if(PRINT)
+  		  printf("\nSYS_CREATE\n");
       lock_acquire(&file_lock);
       f->eax = create((const char *) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_REMOVE:
-  		//printf("\nSYS_REMOVE\n");
+      if(PRINT)
+  		  printf("\nSYS_REMOVE\n");
       lock_acquire(&file_lock);
       f->eax = remove((const char *) *get_arg(esp, 0));
   		break;
 
   	case SYS_OPEN:
-  		//printf("\nSYS_OPEN\n");
+      if(PRINT)
+  		  printf("\nSYS_OPEN\n");
       lock_acquire(&file_lock);
       f->eax = open((const char *) *get_arg(esp, 0));
   		break;
 
   	case SYS_FILESIZE:
-  		//printf("\nSYS_FILESIZE\n");
+      if(PRINT)
+  		  printf("\nSYS_FILESIZE\n");
       lock_acquire(&file_lock);
       f->eax = filesize((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_READ:
-  		//printf("\nSYS_READ\n");
+      if(PRINT)
+  		  printf("\nSYS_READ\n");
       f->eax = read((int) *get_arg(esp, 0), (void *) *get_arg(esp, 1), (unsigned) *get_arg(esp, 2));
   		break;
 
   	case SYS_WRITE:
-  		//printf("\nSYS_WRITE\n");
+      if(PRINT)
+  		    printf("\nSYS_WRITE\n");
       f->eax = write((int) *get_arg(esp, 0), (void *) *get_arg(esp, 1), (unsigned) *get_arg(esp, 2));
   		break;
 
   	case SYS_SEEK:
-  		//printf("\nSYS_SEEK\n");
+      if(PRINT)
+  		  printf("\nSYS_SEEK\n");
       lock_acquire(&file_lock);
       seek((int) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_TELL:
-  		//printf("\nSYS_TELL\n");
+      if(PRINT)
+  		  printf("\nSYS_TELL\n");
       lock_acquire(&file_lock);
       tell((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_CLOSE:
-  		//printf("\nSYS_CLOSE\n");
+      if(PRINT)
+  		    printf("\nSYS_CLOSE\n");
       lock_acquire(&file_lock);
       close((int) *get_arg(esp, 0));
   		break;
@@ -147,25 +163,23 @@ void exit (int status){
   lock_release(&file_lock);
   printf("%s: exit(%d)\n", thread_current()->name, status);
   struct thread *parent = t->parent;
-  sema_up(&parent->sema);
+  sema_up(&parent->child_waiting_sema);
+  sema_down(&t->parent_waiting_sema);
   thread_exit();
 }
 
 
 pid_t exec (const char *file){
   tid_t tid = process_execute(file);
-  struct thread *t = thread_current();
-  if(t->exit_status == -1)
-    return -1;
-  else
-    return (pid_t) tid;
+  return (pid_t) tid;
 }
-/*
 
-int wait (pid_t){
 
+int wait (pid_t pid){
+  pid_t temp_pid = (pid_t) process_wait((tid_t) pid);
+  return temp_pid;
 }
-*/
+
 
 bool create (const char *file, unsigned initial_size){
   //create file
@@ -312,6 +326,9 @@ void close (int fd){
   }
   lock_release(&file_lock);
 }
+
+
+
 
 
 //check whether vaddr is valid addr, if not, exit

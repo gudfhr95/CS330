@@ -473,12 +473,16 @@ init_thread (struct thread *t, const char *name, int priority)
   //to init fd list
   t->fd_count = 2;
   list_init(&t->file_list); 
-  //parent of current thread
-  t->parent = running_thread();
   //init child list
   list_init(&t->child_list);
-  sema_init(&t->sema, 0);
-
+  //init sema and bool
+  sema_init(&t->child_waiting_sema, 0);
+  sema_init(&t->parent_waiting_sema, 0);
+  //parent of current thread
+  t->parent = running_thread();
+  //put thread into parent's child list
+  list_push_back(&running_thread()->child_list, &t->childelem);
+  
   list_push_back (&all_list, &t->allelem);
 }
 
