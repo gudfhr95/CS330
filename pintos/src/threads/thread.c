@@ -475,7 +475,8 @@ init_thread (struct thread *t, const char *name, int priority)
   list_init(&t->file_list); 
   //init child list
   list_init(&t->child_list);
-  //init sema and bool
+  //init bool and sema
+  sema_init(&t->load_waiting_sema, 0);
   sema_init(&t->child_waiting_sema, 0);
   sema_init(&t->parent_waiting_sema, 0);
   //parent of current thread

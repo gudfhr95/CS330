@@ -19,6 +19,8 @@
 #include "threads/vaddr.h"
 #include "threads/synch.h"
 
+#include <user/syscall.h>
+
 static thread_func start_process NO_RETURN;
 
 
@@ -58,6 +60,16 @@ process_execute (const char *file_name)
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (argv[0], PRI_DEFAULT, start_process, fn_copy);
+
+  //waiting for loading
+  thread_current()->load_waiting_status = false;
+  sema_down(&thread_current()->load_waiting_sema);
+
+  //if load failed
+  if(thread_current()->load_waiting_status == false){
+    return -1;
+  }
+
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -82,7 +94,7 @@ start_process (void *file_name_)
   /* If load failed, quit. */
   palloc_free_page (file_name);
   if (!success) 
-    thread_exit ();
+    exit(-1);
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -291,6 +303,9 @@ load (const char *file_name, void (**eip) (void), void **esp)
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
+      //make load waiting status false and wake up parent
+      thread_current()->parent->load_waiting_status = false;
+      sema_up(&thread_current()->parent->load_waiting_sema);
       goto done; 
     }
 
@@ -376,6 +391,10 @@ load (const char *file_name, void (**eip) (void), void **esp)
   pass_argument(argv, &argc, esp);
 
   success = true;
+
+  //make load waiting status to true and wake up parent
+  thread_current()->parent->load_waiting_status = true;
+  sema_up(&thread_current()->parent->load_waiting_sema);
 
  done:
   /* We arrive here whether the load is successful or not. */

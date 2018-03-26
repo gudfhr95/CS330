@@ -111,6 +111,10 @@ struct thread
     struct list child_list;
     struct list_elem childelem;
 
+    //for waiting loading
+    bool load_waiting_status;  //if true, loading is done
+    struct semaphore load_waiting_sema;
+
     //for waiting child and parent
     struct semaphore child_waiting_sema;
     struct semaphore parent_waiting_sema;
