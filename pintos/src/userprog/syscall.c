@@ -148,6 +148,10 @@ void halt (void){
 
 void exit (int status){
   struct thread *t = thread_current();
+  //if current lock is null
+  if(file_lock.holder == NULL){
+    lock_acquire(&file_lock);
+  }
   //close all file opened in current thread
   struct list_elem *e;
   for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
@@ -248,6 +252,11 @@ int read (int fd, void *buffer, unsigned length){
   }
   else{
     lock_acquire(&file_lock);
+    //if reading kernel vaddr
+    if(is_kernel_vaddr(buffer+length)){
+      lock_release(&file_lock);
+      exit(-1);
+    }
     struct file *f = get_file_by_fd(fd);
     //if no file in file_list
     if(f == NULL){
@@ -273,6 +282,12 @@ int write (int fd, const void *buffer, unsigned length){
 
   else{
     lock_acquire(&file_lock);
+    //if reading kernel vaddr
+    if(is_kernel_vaddr(buffer+length)){
+      lock_release(&file_lock);
+      exit(-1);
+    }
+
     struct file *f = get_file_by_fd(fd);
     //if no file in file_list
     if(f == NULL){
