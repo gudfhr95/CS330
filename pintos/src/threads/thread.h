@@ -104,6 +104,8 @@ struct thread
     struct list file_list;
     int fd_count;
 
+    struct file *executable;
+
     //save parent thread
     struct thread *parent;
 

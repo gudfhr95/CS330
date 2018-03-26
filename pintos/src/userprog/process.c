@@ -305,7 +305,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
       printf ("load: %s: open failed\n", file_name);
       //make load waiting status false and wake up parent
       thread_current()->parent->load_waiting_status = false;
-      sema_up(&thread_current()->parent->load_waiting_sema);
       goto done; 
     }
 
@@ -394,10 +393,13 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
   //make load waiting status to true and wake up parent
   thread_current()->parent->load_waiting_status = true;
-  sema_up(&thread_current()->parent->load_waiting_sema);
+
+  thread_current()->executable = file;
+  
 
  done:
   /* We arrive here whether the load is successful or not. */
+  sema_up(&thread_current()->parent->load_waiting_sema);
   file_close (file);
   return success;
 }
