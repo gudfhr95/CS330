@@ -187,6 +187,10 @@ int wait (pid_t pid){
 
 
 bool create (const char *file, unsigned initial_size){
+  //if file name is NULL
+  if(file == NULL){
+    exit(-1);
+  }
   //create file
   bool b = filesys_create(file, initial_size);
   lock_release(&file_lock);
@@ -202,15 +206,19 @@ bool remove (const char *file){
 
 
 int open (const char *file){
-  //open file
-  struct file *f = filesys_open(file);
-  //if file is null return error
-  if(f == NULL){
-    lock_release(&file_lock);
-    return -1;
+  //if file is NULL
+  if(file == NULL){
+    exit(-1);
   }
   //if file is not null
   else{
+    //open file
+    struct file *f = filesys_open(file);
+    //if f is NULL
+    if(f == NULL){
+      lock_release(&file_lock);
+      return -1;
+    }
     //make file list elem and put it to file list of the thread and return fd
     struct file_list_elem *fle = malloc(sizeof *fle);
     fle->f = f;
