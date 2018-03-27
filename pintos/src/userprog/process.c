@@ -65,11 +65,14 @@ process_execute (const char *file_name)
   //printf("%d EXEC %d\n", thread_current()->tid, tid);
 
   //waiting for loading
-  //sema_down(&thread_current()->load_waiting_sema);
+  sema_down(&thread_current()->load_waiting_sema);
 
-  
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
+
+  if(thread_current()->load_status == false)
+    tid = -1;
+
   return tid;
 }
 
@@ -89,10 +92,13 @@ start_process (void *file_name_)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
 
+  sema_up(&thread_current()->parent->load_waiting_sema);
+
   /* If load failed, quit. */
   palloc_free_page (file_name);
-  if (!success) 
+  if (!success) {
     exit(-1);
+  }
 
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
@@ -122,6 +128,9 @@ process_wait (tid_t child_tid)
   struct list_elem *e;
   //printf("%d WAITS FOR %d\n", t->tid, child_tid);
   //if TID is invalid
+  if(child_tid == TID_ERROR){
+    return -1;
+  }
 
   //if TID was not a child of the calling process
   for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
@@ -315,7 +324,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
     {
       printf ("load: %s: open failed\n", file_name);
       //make load waiting status false and wake up parent
-      thread_current()->load_status = false;
+      thread_current()->parent->load_status = false;
       goto done; 
     }
 
@@ -403,7 +412,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   success = true;
 
   //make load waiting status to true and wake up parent
-  thread_current()->load_status = true;
+  thread_current()->parent->load_status = true;
 
   file_deny_write(file);
   thread_current()->executable = file;
@@ -411,7 +420,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
  done:
   /* We arrive here whether the load is successful or not. */
-  //sema_up(&thread_current()->parent->load_waiting_sema);
   //file_close (file);
   return success;
 }

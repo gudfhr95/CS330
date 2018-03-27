@@ -19,7 +19,7 @@
 static void syscall_handler (struct intr_frame *);
 
 
-#define PRINT 1    //for debugging
+#define PRINT 0    //for debugging
 
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
@@ -269,7 +269,7 @@ int write (int fd, const void *buffer, unsigned length){
   }
   else{ 
     //if reading kernel vaddr
-    if(is_kernel_vaddr(buffer+8*length)){
+    if(is_kernel_vaddr(buffer+length)){
       lock_release(&file_lock);
       exit(-1);
     }
@@ -318,7 +318,8 @@ unsigned tell (int fd){
 
 void close (int fd){
   struct thread *t = thread_current();
-  lock_acquire(&file_lock);
+  if(file_lock.holder != thread_current())
+    lock_acquire(&file_lock);
   struct list_elem *e;
   for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
     struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
