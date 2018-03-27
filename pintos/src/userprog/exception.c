@@ -151,10 +151,11 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;  
 
-  
+  //if user dont access user vaddr  
   if(!(user && is_user_vaddr(fault_addr))){
     exit(-1);
   }
+  //if addr is NULL
   if(fault_addr == NULL){
     exit(-1);
   }

@@ -62,14 +62,13 @@ process_execute (const char *file_name)
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (argv[0], PRI_DEFAULT, start_process, fn_copy);
   
-  //printf("%d EXEC %d\n", thread_current()->tid, tid);
-
-  //waiting for loading
+  //waiting for loading child exec
   sema_down(&thread_current()->load_waiting_sema);
 
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
 
+  //if load failed, remove child thread from child list
   if(thread_current()->load_waiting_status == false){
     struct list_elem *e;
     for(e = list_begin(&thread_current()->child_list); e != list_end(&thread_current()->child_list); e = list_next(e)){
@@ -78,7 +77,7 @@ process_execute (const char *file_name)
         list_remove(&child_thread->childelem);
       }
     }
-    tid = -1;
+    tid = TID_ERROR;
   }
 
   return tid;
@@ -100,6 +99,7 @@ start_process (void *file_name_)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
 
+  //wake up parent
   sema_up(&thread_current()->parent->load_waiting_sema);
 
   /* If load failed, quit. */
@@ -134,12 +134,11 @@ process_wait (tid_t child_tid)
   int status = -1;
   bool is_child = false;
   struct list_elem *e;
-  //printf("%d WAITS FOR %d\n", t->tid, child_tid);
+
   //if TID is invalid
   if(child_tid == TID_ERROR){
     return -1;
   }
-
   //if TID was not a child of the calling process
   for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
     struct thread *child_thread = list_entry(e, struct thread, childelem);
@@ -151,15 +150,13 @@ process_wait (tid_t child_tid)
   if(!is_child){
     return -1;
   }
-  //if process_wait() has already been successfully called
-
-  //wait for child process to end
-
-  //remove child from child list
+  
+  //wait for child
   for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
     struct thread *child_thread = list_entry(e, struct thread, childelem);
     if(child_thread->tid == child_tid){
       sema_down(&t->child_waiting_sema);
+      //remove child from child_list and return status
       list_remove(&child_thread->childelem);
       status = child_thread->exit_status;
       //waking up waiting child
@@ -168,7 +165,6 @@ process_wait (tid_t child_tid)
     }
   }
 
-  
   return status;
 }
 
@@ -179,16 +175,16 @@ process_exit (void)
   struct thread *cur = thread_current ();
   uint32_t *pd;
 
-  //printf("%d EXITED\n", cur->tid);
-
-  //list_remove(&thread_current()->childelem);
-
+  //close current thread's executable
   file_close(cur->executable);
 
+  //close all files in thread
   close_all();
 
+  //wake up parent
   sema_up(&thread_current()->parent->child_waiting_sema);
 
+  //wait for parent to remove from child list
   sema_down(&thread_current()->parent_waiting_sema);
   
   /* Destroy the current process's page directory and switch back
@@ -315,6 +311,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   char temp_file_name[FILE_NAME_MAX_LENGTH];
   char *argv[ARGS_MAX_LENGTH];
   int argc = 0;
+
   //copy file name to temp file name to parse it
   strlcpy(temp_file_name, file_name, FILE_NAME_MAX_LENGTH);
 
@@ -333,7 +330,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
   if (file == NULL) 
     {
       printf ("load: %s: open failed\n", file_name);
-      //make load waiting status false and wake up parent
+      //make load status false
       thread_current()->parent->load_waiting_status = false;
       thread_current()->load_status = false;
       goto done; 
@@ -422,17 +419,16 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
   success = true;
 
-  //make load waiting status to true and wake up parent
+  //make load status to true
   thread_current()->parent->load_waiting_status = true;
   thread_current()->load_status = true;
 
-  file_deny_write(file);
+  //save current thread's executable and deny write to protect
   thread_current()->executable = file;
+  file_deny_write(file);
   
-
  done:
   /* We arrive here whether the load is successful or not. */
-  //file_close (file);
   return success;
 }
 
@@ -506,7 +502,6 @@ static void pass_argument(char *argv[], int *argc, void **esp){
   //return addr
   memset(*esp, 0, 4);
 
-  //hex_dump(*esp, *esp, 100, 1);
 }
 
 /* Checks whether PHDR describes a valid, loadable segment in
