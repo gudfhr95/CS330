@@ -70,8 +70,16 @@ process_execute (const char *file_name)
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
 
-  if(thread_current()->load_status == false)
+  if(thread_current()->load_waiting_status == false){
+    struct list_elem *e;
+    for(e = list_begin(&thread_current()->child_list); e != list_end(&thread_current()->child_list); e = list_next(e)){
+      struct thread *child_thread = list_entry(e, struct thread, childelem);
+      if(child_thread->load_status == false){
+        list_remove(&child_thread->childelem);
+      }
+    }
     tid = -1;
+  }
 
   return tid;
 }
@@ -172,6 +180,8 @@ process_exit (void)
   uint32_t *pd;
 
   //printf("%d EXITED\n", cur->tid);
+
+  //list_remove(&thread_current()->childelem);
 
   file_close(cur->executable);
 
@@ -324,7 +334,8 @@ load (const char *file_name, void (**eip) (void), void **esp)
     {
       printf ("load: %s: open failed\n", file_name);
       //make load waiting status false and wake up parent
-      thread_current()->parent->load_status = false;
+      thread_current()->parent->load_waiting_status = false;
+      thread_current()->load_status = false;
       goto done; 
     }
 
@@ -412,7 +423,8 @@ load (const char *file_name, void (**eip) (void), void **esp)
   success = true;
 
   //make load waiting status to true and wake up parent
-  thread_current()->parent->load_status = true;
+  thread_current()->parent->load_waiting_status = true;
+  thread_current()->load_status = true;
 
   file_deny_write(file);
   thread_current()->executable = file;

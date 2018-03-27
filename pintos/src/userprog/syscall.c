@@ -14,7 +14,6 @@
 #include "threads/malloc.h"
 #include "userprog/process.h"
 #include "devices/input.h"
-#include "threads/palloc.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -196,13 +195,14 @@ int open (const char *file){
     struct file *f = filesys_open(file);
     //if f is NULL
     if(f == NULL){
+      //printf("FUCK : %d\n", thread_current()->fd_count);
       lock_release(&file_lock);
       return -1;
     }
     //make file list elem and put it to file list of the thread and return fd
     struct file_list_elem *fle = calloc (1, sizeof (struct file_list_elem));
     fle->f = f;
-    fle->fd = thread_current()->fd_count++;
+    fle->fd = thread_current()->fd_count;
     thread_current()->fd_count++;
     //printf("FLE : %p\n", fle);
     list_push_back(&thread_current()->file_list, &fle->elem);
@@ -332,7 +332,6 @@ void close (int fd){
     }
   }
 
-  
   lock_release(&file_lock);
 }
 
@@ -370,7 +369,10 @@ void close_all(){
   //struct list_elem *e;
   while(!list_empty(&t->file_list)){
     struct file_list_elem *fle = list_entry(list_pop_front(&t->file_list), struct file_list_elem, elem);
-    close(fle->fd);
+    file_close(fle->f);
+    list_remove(&fle->elem);
+    free(fle);
+
   }
   //printf("FUCK CLOSE ALL\n");
 }

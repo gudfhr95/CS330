@@ -115,6 +115,7 @@ struct thread
 
     //for waiting loading
     bool load_status;  //if true, loading is done
+    bool load_waiting_status;  //for parents
     struct semaphore load_waiting_sema;
 
     //for waiting child and parent
