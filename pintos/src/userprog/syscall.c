@@ -14,11 +14,12 @@
 #include "threads/malloc.h"
 #include "userprog/process.h"
 #include "devices/input.h"
+#include "threads/palloc.h"
 
 static void syscall_handler (struct intr_frame *);
 
 
-#define PRINT 0    //for debugging
+#define PRINT 1    //for debugging
 
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
@@ -58,7 +59,6 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_EXIT:
       if(PRINT)
   		  printf("\nSYS_EXIT\n");
-      lock_acquire(&file_lock);
       exit((int) *get_arg(esp, 0));
   		break;
 
@@ -77,21 +77,18 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_CREATE:
       if(PRINT)
   		  printf("\nSYS_CREATE\n");
-      lock_acquire(&file_lock);
       f->eax = create((const char *) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_REMOVE:
       if(PRINT)
   		  printf("\nSYS_REMOVE\n");
-      lock_acquire(&file_lock);
       f->eax = remove((const char *) *get_arg(esp, 0));
   		break;
 
   	case SYS_OPEN:
       if(PRINT)
   		  printf("\nSYS_OPEN\n");
-      lock_acquire(&file_lock);
       f->eax = open((const char *) *get_arg(esp, 0));
   		break;
 
@@ -117,21 +114,18 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_SEEK:
       if(PRINT)
   		  printf("\nSYS_SEEK\n");
-      lock_acquire(&file_lock);
       seek((int) *get_arg(esp, 0), (unsigned) *get_arg(esp, 1));
   		break;
 
   	case SYS_TELL:
       if(PRINT)
   		  printf("\nSYS_TELL\n");
-      lock_acquire(&file_lock);
       tell((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_CLOSE:
       if(PRINT)
   		    printf("\nSYS_CLOSE\n");
-      lock_acquire(&file_lock);
       close((int) *get_arg(esp, 0));
   		break;
   }
@@ -147,29 +141,11 @@ void halt (void){
 
 
 void exit (int status){
-  struct thread *t = thread_current();
-  //if current lock is null
-  if(file_lock.holder == NULL){
-    lock_acquire(&file_lock);
-  }
-  //close all file opened in current thread
-  struct list_elem *e;
-  for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
-    struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
-    file_close(fle->f);
-    list_remove(&fle->elem);
-    //free(fle);
-  }
+  
+  thread_current()->exit_status = status;
 
-  t->exit_status = status;
-  lock_release(&file_lock);
   printf("%s: exit(%d)\n", thread_current()->name, status);
 
-  struct thread *parent = t->parent;
-  //wake up parent
-  sema_up(&parent->child_waiting_sema);
-  //waiting for parent
-  sema_down(&t->parent_waiting_sema);
   thread_exit();
 }
 
@@ -192,6 +168,7 @@ bool create (const char *file, unsigned initial_size){
     exit(-1);
   }
   //create file
+  lock_acquire(&file_lock);
   bool b = filesys_create(file, initial_size);
   lock_release(&file_lock);
   return b;
@@ -199,6 +176,7 @@ bool create (const char *file, unsigned initial_size){
 
 bool remove (const char *file){
   //remove file
+  lock_acquire(&file_lock);
   bool b = filesys_remove(file);
   lock_release(&file_lock);
   return b;
@@ -206,8 +184,10 @@ bool remove (const char *file){
 
 
 int open (const char *file){
+  lock_acquire(&file_lock);
   //if file is NULL
   if(file == NULL){
+    lock_release(&file_lock);
     exit(-1);
   }
   //if file is not null
@@ -220,14 +200,12 @@ int open (const char *file){
       return -1;
     }
     //make file list elem and put it to file list of the thread and return fd
-    struct file_list_elem *fle = malloc(sizeof *fle);
+    struct file_list_elem *fle = calloc (1, sizeof (struct file_list_elem));
     fle->f = f;
-    fle->fd = thread_current()->fd_count;
+    fle->fd = thread_current()->fd_count++;
     thread_current()->fd_count++;
+    //printf("FLE : %p\n", fle);
     list_push_back(&thread_current()->file_list, &fle->elem);
-    //if opened file is current thread's excutable file, deny write
-    if(!strcmp(thread_current()->name, file))
-      file_deny_write(f);
     lock_release(&file_lock);
     return fle->fd;
   }
@@ -282,16 +260,16 @@ int read (int fd, void *buffer, unsigned length){
 
 
 int write (int fd, const void *buffer, unsigned length){
+  lock_acquire(&file_lock);
   //STDOUT CASE
   if(fd == 1){
     putbuf(buffer, length);
+    lock_release(&file_lock);
     return length;
   }
-
-  else{
-    lock_acquire(&file_lock);
+  else{ 
     //if reading kernel vaddr
-    if(is_kernel_vaddr(buffer+length)){
+    if(is_kernel_vaddr(buffer+8*length)){
       lock_release(&file_lock);
       exit(-1);
     }
@@ -311,6 +289,7 @@ int write (int fd, const void *buffer, unsigned length){
 }
 
 void seek (int fd, unsigned position){
+  lock_acquire(&file_lock);
   struct file *f = get_file_by_fd(fd);
   //if no fd in file_list
   if(f == NULL)
@@ -324,6 +303,7 @@ void seek (int fd, unsigned position){
 
 unsigned tell (int fd){
   struct file *f = get_file_by_fd(fd);
+  lock_acquire(&file_lock);
   //if no fd in file system
   if(f == NULL){
     lock_release(&file_lock);
@@ -338,6 +318,7 @@ unsigned tell (int fd){
 
 void close (int fd){
   struct thread *t = thread_current();
+  lock_acquire(&file_lock);
   struct list_elem *e;
   for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
     struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
@@ -345,9 +326,12 @@ void close (int fd){
       file_close(fle->f);
       list_remove(&fle->elem);
       free(fle);
+      //printf("FLE : %p\n", fle);
       break;
     }
   }
+
+  
   lock_release(&file_lock);
 }
 
@@ -377,5 +361,16 @@ static struct file *get_file_by_fd(int fd){
     }
   }
   return NULL;
+}
+
+void close_all(){
+  struct thread *t = thread_current();
+  //close all file opened in current thread
+  //struct list_elem *e;
+  while(!list_empty(&t->file_list)){
+    struct file_list_elem *fle = list_entry(list_pop_front(&t->file_list), struct file_list_elem, elem);
+    close(fle->fd);
+  }
+  //printf("FUCK CLOSE ALL\n");
 }
 

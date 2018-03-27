@@ -20,6 +20,7 @@
 #include "threads/synch.h"
 
 #include <user/syscall.h>
+#include "userprog/syscall.h"
 
 static thread_func start_process NO_RETURN;
 
@@ -60,16 +61,13 @@ process_execute (const char *file_name)
 
   /* Create a new thread to execute FILE_NAME. */
   tid = thread_create (argv[0], PRI_DEFAULT, start_process, fn_copy);
+  
+  //printf("%d EXEC %d\n", thread_current()->tid, tid);
 
   //waiting for loading
-  thread_current()->load_waiting_status = false;
-  sema_down(&thread_current()->load_waiting_sema);
+  //sema_down(&thread_current()->load_waiting_sema);
 
-  //if load failed
-  if(thread_current()->load_waiting_status == false){
-    return -1;
-  }
-
+  
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -122,7 +120,7 @@ process_wait (tid_t child_tid)
   int status = -1;
   bool is_child = false;
   struct list_elem *e;
-
+  //printf("%d WAITS FOR %d\n", t->tid, child_tid);
   //if TID is invalid
 
   //if TID was not a child of the calling process
@@ -139,12 +137,12 @@ process_wait (tid_t child_tid)
   //if process_wait() has already been successfully called
 
   //wait for child process to end
-  sema_down(&t->child_waiting_sema);
 
   //remove child from child list
   for(e = list_begin(&t->child_list); e != list_end(&t->child_list); e=list_next(e)){
     struct thread *child_thread = list_entry(e, struct thread, childelem);
     if(child_thread->tid == child_tid){
+      sema_down(&t->child_waiting_sema);
       list_remove(&child_thread->childelem);
       status = child_thread->exit_status;
       //waking up waiting child
@@ -153,6 +151,7 @@ process_wait (tid_t child_tid)
     }
   }
 
+  
   return status;
 }
 
@@ -163,6 +162,16 @@ process_exit (void)
   struct thread *cur = thread_current ();
   uint32_t *pd;
 
+  //printf("%d EXITED\n", cur->tid);
+
+  file_close(cur->executable);
+
+  close_all();
+
+  sema_up(&thread_current()->parent->child_waiting_sema);
+
+  sema_down(&thread_current()->parent_waiting_sema);
+  
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
@@ -179,6 +188,8 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+
+  
 }
 
 /* Sets up the CPU for running user code in the current
@@ -304,7 +315,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
     {
       printf ("load: %s: open failed\n", file_name);
       //make load waiting status false and wake up parent
-      thread_current()->parent->load_waiting_status = false;
+      thread_current()->load_status = false;
       goto done; 
     }
 
@@ -392,15 +403,16 @@ load (const char *file_name, void (**eip) (void), void **esp)
   success = true;
 
   //make load waiting status to true and wake up parent
-  thread_current()->parent->load_waiting_status = true;
+  thread_current()->load_status = true;
 
+  file_deny_write(file);
   thread_current()->executable = file;
   
 
  done:
   /* We arrive here whether the load is successful or not. */
-  sema_up(&thread_current()->parent->load_waiting_sema);
-  file_close (file);
+  //sema_up(&thread_current()->parent->load_waiting_sema);
+  //file_close (file);
   return success;
 }
 
