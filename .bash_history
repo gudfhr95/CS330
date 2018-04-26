@@ -1,5 +1,3 @@
-vim grade
-make
 make check
 vim grade
 make check
@@ -1998,3 +1996,5 @@ git add .
 git commit -m "add some coments"
 git push origin masnter
 git push origin master
+cd pintos/src/vm
+ls

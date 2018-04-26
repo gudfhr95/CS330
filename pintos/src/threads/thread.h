@@ -4,6 +4,7 @@
 #include <debug.h>
 #include <list.h>
 #include <stdint.h>
+#include <hash.h>
 #include "threads/synch.h"
 
 /* States in a thread's life cycle. */
@@ -98,6 +99,8 @@ struct thread
     /* Owned by userprog/process.c. */
     uint32_t *pagedir;                  /* Page directory. */
 
+    struct hash spt;
+
     //exit status
     int exit_status;
 
@@ -118,12 +121,12 @@ struct thread
     //for waiting loading
     bool load_status;  //if true, loading is done, for child
     bool load_waiting_status;  //for parents
-    struct semaphore load_waiting_sema; 
+    struct semaphore load_waiting_sema;
 
     //for waiting child and parent
     struct semaphore child_waiting_sema;
     struct semaphore parent_waiting_sema;
-    
+
 #endif
 
     /* Owned by thread.c. */

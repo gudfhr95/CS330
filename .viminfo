@@ -18,7 +18,7 @@ $
 
 # Command Line History (newest to oldest):
 :q
-|2,0,1524194202,,"q"
+|2,0,1524769584,,"q"
 :q!
 |2,0,1522647304,,"q!"
 :sq
@@ -82,28 +82,38 @@ $
 |3,0,36,0,1,0,1521278363,"("
 
 # File marks:
-'0  1  0  ~/cs230_project1/20140631/skeleton.c
-|4,48,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+'0  1  0  ~/pintos/src/vm/build/grade
+|4,48,1,0,1524769584,"~/pintos/src/vm/build/grade"
 '1  1  0  ~/pintos/src/vm/build/grade
-|4,49,1,0,1523270368,"~/pintos/src/vm/build/grade"
-'2  1  0  ~/pintos/src/userprog/build/grade
-|4,50,1,0,1522754103,"~/pintos/src/userprog/build/grade"
-'3  51  0  ~/pintos/src/threads/build/grade
-|4,51,51,0,1522659129,"~/pintos/src/threads/build/grade"
-'4  51  0  ~/pintos/src/threads/build/grade
-|4,52,51,0,1522656189,"~/pintos/src/threads/build/grade"
-'5  1  0  ~/pintos/src/threads/build/grade
-|4,53,1,0,1522652370,"~/pintos/src/threads/build/grade"
-'6  1  0  ~/pintos/src/threads/build/grade
-|4,54,1,0,1522652370,"~/pintos/src/threads/build/grade"
-'7  1  0  ~/pintos/src/threads/build/grade
-|4,55,1,0,1522652366,"~/pintos/src/threads/build/grade"
+|4,49,1,0,1524763935,"~/pintos/src/vm/build/grade"
+'2  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,50,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+'3  1  0  ~/pintos/src/vm/build/grade
+|4,51,1,0,1523270368,"~/pintos/src/vm/build/grade"
+'4  1  0  ~/pintos/src/vm/build/grade
+|4,52,1,0,1523270368,"~/pintos/src/vm/build/grade"
+'5  1  0  ~/pintos/src/userprog/build/grade
+|4,53,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+'6  51  0  ~/pintos/src/threads/build/grade
+|4,54,51,0,1522659129,"~/pintos/src/threads/build/grade"
+'7  51  0  ~/pintos/src/threads/build/grade
+|4,55,51,0,1522656189,"~/pintos/src/threads/build/grade"
 '8  1  0  ~/pintos/src/threads/build/grade
-|4,56,1,0,1522652366,"~/pintos/src/threads/build/grade"
-'9  8  0  ~/pintos/src/threads/build
-|4,57,8,0,1522647304,"~/pintos/src/threads/build"
+|4,56,1,0,1522652370,"~/pintos/src/threads/build/grade"
+'9  1  0  ~/pintos/src/threads/build/grade
+|4,57,1,0,1522652370,"~/pintos/src/threads/build/grade"
 
 # Jumplist (newest first):
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524769584,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524763935,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
 -'  1  0  ~/cs230_project1/20140631/skeleton.c
 |4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
 -'  1  0  ~/pintos/src/vm/build/grade
@@ -118,6 +128,78 @@ $
 |4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
 -'  1  0  ~/pintos/src/userprog/build/grade
 |4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  1  0  ~/pintos/src/userprog/build/grade
+|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
 -'  51  0  ~/pintos/src/threads/build/grade
 |4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
 -'  51  0  ~/pintos/src/threads/build/grade
@@ -150,6 +232,54 @@ $
 |4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
 -'  51  0  ~/pintos/src/threads/build/grade
 |4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
+-'  51  0  ~/pintos/src/threads/build/grade
+|4,39,51,0,1522656189,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
 |4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
@@ -166,153 +296,23 @@ $
 |4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
 |4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652370,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
--'  1  0  ~/pintos/src/threads/build/grade
-|4,39,1,0,1522652366,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
+|4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
+|4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
+|4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 -'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
--'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
--'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
--'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
--'  18  0  ~/pintos/src/threads/build/grade
-|4,39,18,0,1522647311,"~/pintos/src/threads/build/grade"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
--'  8  0  ~/pintos/src/threads/build
-|4,39,8,0,1522647304,"~/pintos/src/threads/build"
+|4,39,18,0,1522652376,"~/pintos/src/threads/build/grade"
 
 # History of marks within files (newest to oldest):
 
-> ~/cs230_project1/20140631/skeleton.c
-	*	1524194200	0
+> ~/pintos/src/vm/build/grade
+	*	1524769583	0
 	"	1	0
 
-> ~/pintos/src/vm/build/grade
-	*	1523270354	0
+> ~/cs230_project1/20140631/skeleton.c
+	*	1524194200	0
 	"	1	0
 
 > ~/pintos/src/userprog/build/grade
