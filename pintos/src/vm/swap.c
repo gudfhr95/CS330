@@ -1,5 +1,6 @@
 #include "vm/swap.h"
 #include <stdio.h>
+#include "threads/synch.h"
 
 /* init swap */
 void swap_init(void){

@@ -1,6 +1,5 @@
 #include <bitmap.h>
 #include "devices/block.h"
-#include "threads/synch.h"
 
 struct block *swap_block;
 

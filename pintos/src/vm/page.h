@@ -32,5 +32,9 @@ void page_table_destroy(struct hash *pt);
 bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable);
 struct page_table_entry *page_table_lookup_by_upage(void *upage);
 
+/* for load page */
+bool page_load_file(struct page_table_entry *pte);
+bool page_load_swap(struct page_table_entry *pte);
+
 /* handling page fault */
 bool page_fault_handler(void *upage);

@@ -1,7 +1,12 @@
 #include "vm/page.h"
+#include <string.h>
 #include "threads/malloc.h"
+#include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "userprog/process.h"
+#include "vm/frame.h"
+#include "filesys/file.h"
 
 /* Returns a hash value for page p. */
 unsigned page_table_hash(const struct hash_elem *p_, void *aux UNUSED){
@@ -65,5 +70,87 @@ struct page_table_entry *page_table_lookup_by_upage(void *upage){
 
 /* for page fault handling */
 bool page_fault_handler(void *uaddr){
-  //void *upage = pg_round_down(uaddr);
+  void *upage = pg_round_down(uaddr);
+  struct page_table_entry *pte = page_table_lookup_by_upage(upage);
+  //if no pte
+  if(pte == NULL){
+    /*
+    //grow stack case
+    if(){
+
+    }
+    //no valid access
+    else{
+
+    }
+    */
+  }
+  //if pte is in page table
+  else{
+    //if pte is valid
+    if(pte->valid){
+      //if pte is swapped
+      if(pte->is_swapped){
+        return page_load_swap(pte);
+      }
+      //if pte is not swapped
+      else{
+        return true;
+      }
+    }
+    //if pte is invalid
+    else{
+      return page_load_file(pte);
+    }
+  }
+}
+
+/* load page from file */
+bool page_load_file(struct page_table_entry *pte){
+  uint8_t *kpage = frame_get_page (PAL_USER|PAL_ZERO);
+  if (kpage == NULL)
+    return false;
+
+  if (file_read_at(pte->file, kpage, pte->page_read_bytes, pte->ofs) != (int) pte->page_read_bytes)
+    {
+      palloc_free_page (kpage);
+      return false;
+    }
+  memset (kpage + pte->page_read_bytes, 0, pte->page_zero_bytes);
+
+  if (!install_page (pte->upage, kpage, pte->writable))
+    {
+      palloc_free_page (kpage);
+      return false;
+    }
+
+  //add frame table
+  struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
+  fte->paddr = kpage;
+  fte->pte = pte;
+  list_push_back(&frame_table, &fte->elem);
+
+  //change state of pte
+  pte->valid = true;
+  pte->fte = fte;
+  return true;
+}
+
+/* load page from swap disk */
+bool page_load_swap(struct page_table_entry *pte){
+  uint8_t *kpage = frame_get_page(PAL_USER|PAL_ZERO);
+  swap_in(pte->sector_index, kpage);
+  if(!install_page(pte->upage, kpage, pte->writable)){
+    palloc_free_page(kpage);
+    return false;
+  }
+
+  struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
+  fte->paddr = kpage;
+  fte->pte = pte;
+  list_push_back(&frame_table, &fte->elem);
+
+  pte->is_swapped = false;
+  pte->fte = fte;
+  return true;
 }
