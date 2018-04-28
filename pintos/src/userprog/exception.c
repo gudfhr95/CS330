@@ -154,10 +154,20 @@ page_fault (struct intr_frame *f)
   write = (f->error_code & PF_W) != 0;
   user = (f->error_code & PF_U) != 0;
 
+  //printf("THREAD : %d , FAULT ADDR : %p\n", thread_current()->tid, fault_addr);
+  //printf("ESP : %p\n", f->esp);
 
+  //for differenciate load page and stack growing
   bool load = false;
+  bool stack = false;
+
   if(is_user_vaddr(fault_addr) && not_present){
-    load = page_fault_handler(fault_addr);
+    //stack growing
+    if(fault_addr >= f->esp-32){
+      stack = true;
+    }
+    //load
+    load = page_fault_handler(fault_addr, stack);
   }
 
 

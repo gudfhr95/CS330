@@ -9,6 +9,7 @@
 #include "threads/flags.h"
 #include "threads/init.h"
 #include "threads/interrupt.h"
+#include "threads/malloc.h"
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
@@ -18,6 +19,7 @@
 #include "userprog/pagedir.h"
 #include "userprog/tss.h"
 #include "vm/page.h"
+#include "vm/frame.h"
 #include "filesys/directory.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
@@ -104,9 +106,11 @@ start_process (void *file_name_)
   //wake up parent
   sema_up(&thread_current()->parent->load_waiting_sema);
 
+
   /* If load failed, quit. */
   palloc_free_page (file_name);
   if (!success) {
+    //printf("LOAD FAILED\n");
     exit(-1);
   }
 
@@ -175,13 +179,15 @@ void
 process_exit (void)
 {
   struct thread *cur = thread_current ();
-  uint32_t *pd;
 
+  uint32_t *pd;
   //close current thread's executable
   file_close(cur->executable);
 
   //close all files in thread
   close_all();
+
+  page_table_destroy(&cur->spt);
 
   //wake up parent
   sema_up(&thread_current()->parent->child_waiting_sema);
@@ -189,7 +195,8 @@ process_exit (void)
   //wait for parent to remove from child list
   sema_down(&thread_current()->parent_waiting_sema);
 
-  page_table_destroy(&cur->spt);
+  //frame_free_all(cur);
+
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -415,7 +422,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
   /* Set up stack. */
   if (!setup_stack (esp))
     goto done;
-
   /* Start address. */
   *eip = (void (*) (void)) ehdr.e_entry;
 
@@ -587,24 +593,8 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       if(!page_table_add_entry(file, ofs, upage, page_read_bytes, page_zero_bytes, writable)){
         return false;
       }
-      /*
-      uint8_t *kpage = palloc_get_page (PAL_USER);
-      if (kpage == NULL)
-        return false;
+      //printf("THREAD : %d, UPAGE : %p\n", thread_current()->tid, upage);
 
-      if (file_read (file, kpage, page_read_bytes) != (int) page_read_bytes)
-        {
-          palloc_free_page (kpage);
-          return false;
-        }
-      memset (kpage + page_read_bytes, 0, page_zero_bytes);
-
-      if (!install_page (upage, kpage, writable))
-        {
-          palloc_free_page (kpage);
-          return false;
-        }
-        */
       /* Advance. */
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;
@@ -619,10 +609,20 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 static bool
 setup_stack (void **esp)
 {
+  struct page_table_entry *pte = malloc(sizeof(struct page_table_entry));
+  pte->upage = (void *)0xBFFFF000;
+  pte->writable = true;
+  pte->valid = false;
+  pte->is_swapped = false;
+
+  if(hash_insert(&thread_current()->spt, &pte->hash_elem) != NULL){
+    return false;
+  }
+
   uint8_t *kpage;
   bool success = false;
 
-  kpage = palloc_get_page (PAL_USER | PAL_ZERO);
+  kpage = frame_get_page (PAL_USER | PAL_ZERO);
   if (kpage != NULL)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
@@ -631,6 +631,16 @@ setup_stack (void **esp)
       else
         palloc_free_page (kpage);
     }
+
+  struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
+  fte->paddr = kpage;
+  fte->pte = pte;
+  fte->thread = thread_current();
+  list_push_back(&frame_table, &fte->elem);
+
+  pte->is_swapped = false;
+  pte->fte = fte;
+
   return success;
 }
 

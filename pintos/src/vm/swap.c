@@ -1,9 +1,9 @@
 #include "vm/swap.h"
 #include <stdio.h>
-#include "threads/synch.h"
 
 /* init swap */
 void swap_init(void){
+  lock_init(&swap_lock);
   swap_block = block_get_role(BLOCK_SWAP);
   if(swap_block == NULL){
     printf("NO SWAP DISK\n");
@@ -18,6 +18,7 @@ void swap_init(void){
 
 /* swap in */
 void swap_in(block_sector_t index, void *paddr){
+  lock_acquire(&swap_lock);
   //if index is invalid
   if(bitmap_test(swap_bitmap, index) == 0){
     printf("INVALID SWAP BLOCK INDEX\n");
@@ -29,10 +30,14 @@ void swap_in(block_sector_t index, void *paddr){
     }
   }
   bitmap_set(swap_bitmap, index, 0);
+
+  lock_release(&swap_lock);
 }
 
 /* swap out */
 block_sector_t swap_out(void *paddr){
+  lock_acquire(&swap_lock);
+
   unsigned i;
   bool is_full = true;
   // check whether swap disk is full
@@ -53,5 +58,7 @@ block_sector_t swap_out(void *paddr){
     }
   }
   bitmap_set(swap_bitmap, i, 1);
+  
+  lock_release(&swap_lock);
   return i;
 }

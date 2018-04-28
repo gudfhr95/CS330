@@ -3,7 +3,6 @@
 #include <syscall-nr.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
-
 #include "threads/vaddr.h"
 #include "devices/shutdown.h"
 #include <user/syscall.h>
@@ -35,16 +34,16 @@ struct file_list_elem{
 };
 
 void
-syscall_init (void) 
+syscall_init (void)
 {
   lock_init(&file_lock);
   intr_register_int (0x30, 3, INTR_ON, syscall_handler, "syscall");
 }
 
 static void
-syscall_handler (struct intr_frame *f UNUSED) 
+syscall_handler (struct intr_frame *f UNUSED)
 {
-  
+
   uintptr_t* esp= f->esp;
   int syscall = *esp;
 
@@ -141,7 +140,6 @@ void halt (void){
 void exit (int status){
   //save exit status
   thread_current()->exit_status = status;
-
   printf("%s: exit(%d)\n", thread_current()->name, status);
   //exit thread
   thread_exit();
@@ -264,7 +262,7 @@ int write (int fd, const void *buffer, unsigned length){
     lock_release(&file_lock);
     return length;
   }
-  else{ 
+  else{
     //if reading kernel vaddr
     if(is_kernel_vaddr(buffer+length)){
       lock_release(&file_lock);
@@ -372,4 +370,3 @@ void close_all(){
     free(fle);
   }
 }
-

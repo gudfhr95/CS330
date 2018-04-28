@@ -18,7 +18,9 @@ $
 
 # Command Line History (newest to oldest):
 :q
-|2,0,1524916141,,"q"
+|2,0,1524932038,,"q"
+:ㅂ
+|2,0,1524920297,,"ㅂ"
 :q!
 |2,0,1522647304,,"q!"
 :sq
@@ -82,30 +84,82 @@ $
 |3,0,36,0,1,0,1521278363,"("
 
 # File marks:
-'0  32  0  ~/pintos/src/vm/build/grade
-|4,48,32,0,1524916141,"~/pintos/src/vm/build/grade"
-'1  1  0  ~/pintos/src/vm/build/grade
-|4,49,1,0,1524769584,"~/pintos/src/vm/build/grade"
-'2  1  0  ~/pintos/src/vm/build/grade
-|4,50,1,0,1524769584,"~/pintos/src/vm/build/grade"
-'3  1  0  ~/pintos/src/vm/build/grade
-|4,51,1,0,1524763935,"~/pintos/src/vm/build/grade"
-'4  1  0  ~/pintos/src/vm/build/grade
-|4,52,1,0,1524763935,"~/pintos/src/vm/build/grade"
-'5  1  0  ~/cs230_project1/20140631/skeleton.c
-|4,53,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
-'6  1  0  ~/pintos/src/vm/build/grade
-|4,54,1,0,1523270368,"~/pintos/src/vm/build/grade"
-'7  1  0  ~/pintos/src/vm/build/grade
-|4,55,1,0,1523270368,"~/pintos/src/vm/build/grade"
-'8  1  0  ~/pintos/src/vm/build/grade
-|4,56,1,0,1523270368,"~/pintos/src/vm/build/grade"
-'9  1  0  ~/pintos/src/vm/build/grade
-|4,57,1,0,1523270368,"~/pintos/src/vm/build/grade"
+'0  14  3  ~/pintos/src/vm/build/grade
+|4,48,14,3,1524932038,"~/pintos/src/vm/build/grade"
+'1  1  3  ~/pintos/src/vm/build/grade
+|4,49,1,3,1524929565,"~/pintos/src/vm/build/grade"
+'2  1  3  ~/pintos/src/vm/build/grade
+|4,50,1,3,1524929565,"~/pintos/src/vm/build/grade"
+'3  1  3  ~/pintos/src/vm/build/grade
+|4,51,1,3,1524928168,"~/pintos/src/vm/build/grade"
+'4  1  3  ~/pintos/src/vm/build/grade
+|4,52,1,3,1524928168,"~/pintos/src/vm/build/grade"
+'5  42  0  ~/pintos/src/vm/build/grade
+|4,53,42,0,1524928127,"~/pintos/src/vm/build/grade"
+'6  42  0  ~/pintos/src/vm/build/grade
+|4,54,42,0,1524928127,"~/pintos/src/vm/build/grade"
+'7  42  0  ~/pintos/src/vm/build/grade
+|4,55,42,0,1524928127,"~/pintos/src/vm/build/grade"
+'8  42  0  ~/pintos/src/vm/build/grade
+|4,56,42,0,1524928127,"~/pintos/src/vm/build/grade"
+'9  42  0  ~/pintos/src/vm/build/grade
+|4,57,42,0,1524928127,"~/pintos/src/vm/build/grade"
 
 # Jumplist (newest first):
+-'  14  3  ~/pintos/src/vm/build/grade
+|4,39,14,3,1524932038,"~/pintos/src/vm/build/grade"
+-'  1  3  ~/pintos/src/vm/build/grade
+|4,39,1,3,1524931999,"~/pintos/src/vm/build/grade"
+-'  1  3  ~/pintos/src/vm/build/grade
+|4,39,1,3,1524929565,"~/pintos/src/vm/build/grade"
+-'  1  3  ~/pintos/src/vm/build/grade
+|4,39,1,3,1524928168,"~/pintos/src/vm/build/grade"
+-'  42  0  ~/pintos/src/vm/build/grade
+|4,39,42,0,1524928160,"~/pintos/src/vm/build/grade"
+-'  42  0  ~/pintos/src/vm/build/grade
+|4,39,42,0,1524928160,"~/pintos/src/vm/build/grade"
+-'  42  0  ~/pintos/src/vm/build/grade
+|4,39,42,0,1524928160,"~/pintos/src/vm/build/grade"
+-'  42  0  ~/pintos/src/vm/build/grade
+|4,39,42,0,1524928127,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524928107,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524928107,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524928107,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524928107,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524926387,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524920299,"~/pintos/src/vm/build/grade"
+-'  38  0  ~/pintos/src/vm/build/grade
+|4,39,38,0,1524917098,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
+-'  32  0  ~/pintos/src/vm/build/grade
+|4,39,32,0,1524917094,"~/pintos/src/vm/build/grade"
 -'  32  0  ~/pintos/src/vm/build/grade
 |4,39,32,0,1524916141,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524916086,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524916086,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524916086,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/pintos/src/vm/build/grade
+|4,39,1,0,1524916086,"~/pintos/src/vm/build/grade"
 -'  1  0  ~/pintos/src/vm/build/grade
 |4,39,1,0,1524916086,"~/pintos/src/vm/build/grade"
 -'  1  0  ~/pintos/src/vm/build/grade
@@ -128,188 +182,136 @@ $
 |4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
 -'  1  0  ~/cs230_project1/20140631/skeleton.c
 |4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
--'  1  0  ~/pintos/src/vm/build/grade
-|4,39,1,0,1523270368,"~/pintos/src/vm/build/grade"
--'  1  0  ~/pintos/src/vm/build/grade
-|4,39,1,0,1523270368,"~/pintos/src/vm/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  1  0  ~/pintos/src/userprog/build/grade
-|4,39,1,0,1522754103,"~/pintos/src/userprog/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
--'  51  0  ~/pintos/src/threads/build/grade
-|4,39,51,0,1522659129,"~/pintos/src/threads/build/grade"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
+-'  1  0  ~/cs230_project1/20140631/skeleton.c
+|4,39,1,0,1524194202,"~/cs230_project1/20140631/skeleton.c"
 
 # History of marks within files (newest to oldest):
 
 > ~/pintos/src/vm/build/grade
-	*	1524916130	0
-	"	32	0
+	*	1524932038	0
+	"	14	3
 
 > ~/cs230_project1/20140631/skeleton.c
 	*	1524194200	0

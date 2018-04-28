@@ -1,7 +1,10 @@
 #include <bitmap.h>
 #include "devices/block.h"
+#include "threads/synch.h"
 
 struct block *swap_block;
+
+struct lock swap_lock;
 
 struct bitmap *swap_bitmap;
 

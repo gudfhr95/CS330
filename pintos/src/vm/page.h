@@ -35,6 +35,7 @@ struct page_table_entry *page_table_lookup_by_upage(void *upage);
 /* for load page */
 bool page_load_file(struct page_table_entry *pte);
 bool page_load_swap(struct page_table_entry *pte);
+bool page_grow_stack(void *uaddr);
 
 /* handling page fault */
-bool page_fault_handler(void *upage);
+bool page_fault_handler(void *upage, bool stack);
