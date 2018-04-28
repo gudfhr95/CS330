@@ -609,6 +609,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 static bool
 setup_stack (void **esp)
 {
+  /*
   struct page_table_entry *pte = malloc(sizeof(struct page_table_entry));
   pte->upage = (void *)0xBFFFF000;
   pte->writable = true;
@@ -619,6 +620,7 @@ setup_stack (void **esp)
     return false;
   }
 
+  */
   uint8_t *kpage;
   bool success = false;
 
@@ -632,6 +634,7 @@ setup_stack (void **esp)
         palloc_free_page (kpage);
     }
 
+    /*
   struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
   fte->paddr = kpage;
   fte->pte = pte;
@@ -640,7 +643,7 @@ setup_stack (void **esp)
 
   pte->is_swapped = false;
   pte->fte = fte;
-
+  */
   return success;
 }
 
