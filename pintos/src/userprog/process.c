@@ -337,7 +337,10 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
   /* Open executable file. */
   //open parsed file name
+  //printf("FILE NAME : %s\n", argv[0]);
+  lock_acquire(&file_lock);
   file = filesys_open (argv[0]);
+
   if (file == NULL)
     {
       printf ("load: %s: open failed\n", file_name);
@@ -439,6 +442,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
  done:
   /* We arrive here whether the load is successful or not. */
+  lock_release(&file_lock);
   return success;
 }
 

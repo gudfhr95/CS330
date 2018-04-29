@@ -1,17 +1,16 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
 #include <syscall-nr.h>
+#include <user/syscall.h>
+#include "devices/shutdown.h"
+#include "devices/input.h"
 #include "threads/interrupt.h"
 #include "threads/thread.h"
+#include "threads/malloc.h"
 #include "threads/vaddr.h"
-#include "devices/shutdown.h"
-#include <user/syscall.h>
-#include "threads/synch.h"
+#include "userprog/process.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
-#include "threads/malloc.h"
-#include "userprog/process.h"
-#include "devices/input.h"
 
 static void syscall_handler (struct intr_frame *);
 
@@ -21,9 +20,6 @@ static void syscall_handler (struct intr_frame *);
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
 static struct file *get_file_by_fd(int fd);
-
-//lock for file system
-static struct lock file_lock;
 
 
 //to save in file_list in thread
@@ -147,6 +143,7 @@ void exit (int status){
 
 
 pid_t exec (const char *file){
+  //printf("EXEC :%s\n", file);
   tid_t tid = process_execute(file);
   return (pid_t) tid;
 }
@@ -163,6 +160,7 @@ bool create (const char *file, unsigned initial_size){
   if(file == NULL){
     exit(-1);
   }
+  //printf("CREATE FILE : %s\n", file);
   //create file
   lock_acquire(&file_lock);
   bool b = filesys_create(file, initial_size);
@@ -180,6 +178,7 @@ bool remove (const char *file){
 
 
 int open (const char *file){
+
   lock_acquire(&file_lock);
   //if file is NULL
   if(file == NULL){
@@ -195,6 +194,8 @@ int open (const char *file){
       lock_release(&file_lock);
       return -1;
     }
+
+    //printf("OPEN : %s\n", file);
     //make file list elem and put it to file list of the thread and return fd
     struct file_list_elem *fle = calloc (1, sizeof (struct file_list_elem));
     fle->f = f;
@@ -331,6 +332,17 @@ void close (int fd){
 
   lock_release(&file_lock);
 }
+
+/*
+mapid_t mmap (int fd, void *addr){
+
+}
+
+void munmap (mapid_t){
+
+}
+*/
+
 
 
 //check whether vaddr is valid addr, if not, exit
