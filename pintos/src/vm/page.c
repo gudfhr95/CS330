@@ -195,16 +195,18 @@ bool page_load_swap(struct page_table_entry *pte){
 /* for stack grow case */
 bool page_grow_stack(void *uaddr){
   unsigned i;
+  // itertae through stacks
   for(i=pg_no(uaddr); i<=pg_no(0xBFFFE000); i++){
     void *upage = pg_round_down((void *) (i<<12));
     if(page_table_lookup_by_upage(upage)){
       continue;
     }
     else{
+      // make page table
       struct page_table_entry *pte = malloc(sizeof(struct page_table_entry));
       pte->upage = upage;
       pte->writable = true;
-      pte->valid = false;
+      pte->valid = true;
       pte->is_swapped = false;
 
       if(hash_insert(&thread_current()->spt, &pte->hash_elem) != NULL){
@@ -212,9 +214,8 @@ bool page_grow_stack(void *uaddr){
         return false;
       }
 
+      // load stack
       uint8_t *kpage;
-
-
       kpage = frame_get_page (PAL_USER | PAL_ZERO);
       if (kpage != NULL)
         {
@@ -226,6 +227,7 @@ bool page_grow_stack(void *uaddr){
           }
         }
 
+      // make frame table
       struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
       fte->paddr = kpage;
       fte->pte = pte;

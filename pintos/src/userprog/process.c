@@ -597,8 +597,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       if(!page_table_add_entry(file, ofs, upage, page_read_bytes, page_zero_bytes, writable)){
         return false;
       }
-      //printf("THREAD : %d, UPAGE : %p\n", thread_current()->tid, upage);
-
+      
       /* Advance. */
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;
@@ -613,18 +612,18 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 static bool
 setup_stack (void **esp)
 {
-  /*
+  //make page table entry
   struct page_table_entry *pte = malloc(sizeof(struct page_table_entry));
   pte->upage = (void *)0xBFFFF000;
   pte->writable = true;
-  pte->valid = false;
+  pte->valid = true;
   pte->is_swapped = false;
 
   if(hash_insert(&thread_current()->spt, &pte->hash_elem) != NULL){
     return false;
   }
 
-  */
+  // load stack
   uint8_t *kpage;
   bool success = false;
 
@@ -638,7 +637,7 @@ setup_stack (void **esp)
         palloc_free_page (kpage);
     }
 
-    /*
+  //make frame table
   struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
   fte->paddr = kpage;
   fte->pte = pte;
@@ -647,7 +646,7 @@ setup_stack (void **esp)
 
   pte->is_swapped = false;
   pte->fte = fte;
-  */
+
   return success;
 }
 
