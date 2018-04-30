@@ -158,6 +158,7 @@ page_fault (struct intr_frame *f)
   bool load = false;
   bool stack = false;
 
+  //printf("FAULT ADDR : %p\n", fault_addr);
   if(is_user_vaddr(fault_addr) && not_present){
     //stack growing
     if(fault_addr >= f->esp-32){

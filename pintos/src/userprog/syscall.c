@@ -7,9 +7,12 @@
 #include "threads/interrupt.h"
 #include "threads/thread.h"
 #include "threads/malloc.h"
+#include "threads/palloc.h"
 #include "threads/vaddr.h"
 #include "userprog/process.h"
+#include "userprog/pagedir.h"
 #include "vm/page.h"
+#include "vm/frame.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
 
@@ -347,26 +350,51 @@ mapid_t mmap (int fd, void *addr){
   off_t ofs = 0;
   uint32_t read_bytes = file_length(mmap_file);
 
-  while (read_bytes > 0)
-    {
-      size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
-      size_t page_zero_bytes = PGSIZE - page_read_bytes;
+  while (read_bytes > 0){
+    size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
+    size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
-      if(!page_table_add_entry(mmap_file, ofs, addr, page_read_bytes, page_zero_bytes, true, true)){
-        return -1;
-      }
-
-      read_bytes -= page_read_bytes;
-      ofs += page_read_bytes;
-      addr += PGSIZE;
+    if(!page_table_add_entry(mmap_file, ofs, addr, page_read_bytes, page_zero_bytes, true, true)){
+      return -1;
     }
+
+    read_bytes -= page_read_bytes;
+    ofs += page_read_bytes;
+
+    void *upage = pg_round_down(addr);
+    struct page_table_entry *pte = page_table_lookup_by_upage(upage);
+    page_load_file(pte);
+
+    addr += PGSIZE;
+  }
 
   thread_current()->mmap_count++;
   return thread_current()->mmap_count - 1;
 }
 
 void munmap (mapid_t id){
-
+  struct thread *t = thread_current();
+  struct list_elem *e;
+  for(e=list_begin(&t->mmap_list); e!=list_end(&t->mmap_list); e=list_next(e)){
+    struct mmap_entry *me = list_entry(e, struct mmap_entry, elem);
+    if(me->mmap_id == id){
+      //write at file
+      lock_acquire(&file_lock);
+      file_write_at(me->pte->file, me->pte->upage, me->pte->page_read_bytes, me->pte->ofs);
+      lock_release(&file_lock);
+      //remove fte
+      list_remove(&me->pte->fte->elem);
+      palloc_free_page(me->pte->fte->paddr);
+      free(me->pte->fte);
+      //remove pte
+      hash_delete(&t->spt, &me->pte->hash_elem);
+      pagedir_clear_page(t->pagedir, me->pte->upage);
+      free(me->pte);
+      //remove me
+      list_remove(&me->elem);
+      //free(me);
+    }
+  }
 }
 
 

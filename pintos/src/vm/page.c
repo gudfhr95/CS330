@@ -81,6 +81,7 @@ bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t p
     list_push_back(&thread_current()->mmap_list, &me->elem);
   }
 
+  //insert it to hash
   if(hash_insert(&thread_current()->spt, &pte->hash_elem) == NULL){
     return true;
   }
@@ -140,6 +141,7 @@ bool page_load_file(struct page_table_entry *pte){
   lock_acquire(&frame_lock);
   if (kpage == NULL){
     lock_release(&frame_lock);
+
     return false;
   }
 
@@ -148,11 +150,11 @@ bool page_load_file(struct page_table_entry *pte){
     lock_release(&frame_lock);
     return false;
   }
+
   memset (kpage + pte->page_read_bytes, 0, pte->page_zero_bytes);
 
   if (!install_page (pte->upage, kpage, pte->writable)){
     palloc_free_page (kpage);
-
     lock_release(&frame_lock);
     return false;
   }
