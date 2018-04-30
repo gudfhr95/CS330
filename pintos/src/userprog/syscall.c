@@ -121,6 +121,18 @@ syscall_handler (struct intr_frame *f UNUSED)
   		    printf("\nSYS_CLOSE\n");
       close((int) *get_arg(esp, 0));
   		break;
+
+    case SYS_MMAP:
+      if(PRINT)
+        printf("\nSYS_MMAP\n");
+      mmap((int) *get_arg(esp,0), (void *) *get_arg(esp, 1));
+      break;
+
+    case SYS_MUNMAP:
+      if(PRINT)
+        printf("\nSYS_MUNMAP\n");
+      munmap((int) *get_arg(esp, 0));
+      break;
   }
 
 }
@@ -143,7 +155,6 @@ void exit (int status){
 
 
 pid_t exec (const char *file){
-  //printf("EXEC :%s\n", file);
   tid_t tid = process_execute(file);
   return (pid_t) tid;
 }
@@ -160,7 +171,6 @@ bool create (const char *file, unsigned initial_size){
   if(file == NULL){
     exit(-1);
   }
-  //printf("CREATE FILE : %s\n", file);
   //create file
   lock_acquire(&file_lock);
   bool b = filesys_create(file, initial_size);
@@ -178,7 +188,6 @@ bool remove (const char *file){
 
 
 int open (const char *file){
-
   lock_acquire(&file_lock);
   //if file is NULL
   if(file == NULL){
@@ -194,8 +203,6 @@ int open (const char *file){
       lock_release(&file_lock);
       return -1;
     }
-
-    //printf("OPEN : %s\n", file);
     //make file list elem and put it to file list of the thread and return fd
     struct file_list_elem *fle = calloc (1, sizeof (struct file_list_elem));
     fle->f = f;
@@ -317,7 +324,6 @@ void close (int fd){
   //for exit(-1) case
   if(file_lock.holder != thread_current())
     lock_acquire(&file_lock);
-
   //find by fd and remove file and free fle
   struct list_elem *e;
   for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
@@ -329,19 +335,18 @@ void close (int fd){
       break;
     }
   }
-
   lock_release(&file_lock);
 }
 
-/*
+
 mapid_t mmap (int fd, void *addr){
 
 }
 
-void munmap (mapid_t){
+void munmap (mapid_t id){
 
 }
-*/
+
 
 
 

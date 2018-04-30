@@ -196,7 +196,7 @@ bool page_load_swap(struct page_table_entry *pte){
 bool page_grow_stack(void *uaddr){
   unsigned i;
   // itertae through stacks
-  for(i=pg_no(uaddr); i<=pg_no(0xBFFFE000); i++){
+  for(i=pg_no(uaddr); i<=pg_no((void *)0xBFFFE000); i++){
     void *upage = pg_round_down((void *) (i<<12));
     if(page_table_lookup_by_upage(upage)){
       continue;

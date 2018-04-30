@@ -110,7 +110,6 @@ start_process (void *file_name_)
   /* If load failed, quit. */
   palloc_free_page (file_name);
   if (!success) {
-    //printf("LOAD FAILED\n");
     exit(-1);
   }
 
@@ -195,9 +194,6 @@ process_exit (void)
   //wait for parent to remove from child list
   sema_down(&thread_current()->parent_waiting_sema);
 
-  //frame_free_all(cur);
-
-
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
@@ -214,8 +210,6 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
-
-
 }
 
 /* Sets up the CPU for running user code in the current
@@ -337,7 +331,6 @@ load (const char *file_name, void (**eip) (void), void **esp)
 
   /* Open executable file. */
   //open parsed file name
-  //printf("FILE NAME : %s\n", argv[0]);
   lock_acquire(&file_lock);
   file = filesys_open (argv[0]);
 
@@ -597,7 +590,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       if(!page_table_add_entry(file, ofs, upage, page_read_bytes, page_zero_bytes, writable)){
         return false;
       }
-      
+
       /* Advance. */
       read_bytes -= page_read_bytes;
       zero_bytes -= page_zero_bytes;

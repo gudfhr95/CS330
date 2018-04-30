@@ -19,6 +19,5 @@ struct frame_table_entry{
 void frame_table_init(void);
 void *frame_get_page(enum palloc_flags flags);
 void frame_free_all(struct thread *t);
-//void *frame_free_page(void *frame);
 
 struct frame_table_entry *frame_find_victim(void);
