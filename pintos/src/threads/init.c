@@ -33,7 +33,7 @@
 #endif
 #ifdef VM
 #include "vm/page.h"
-//#include "vm/frame.h"
+#include "vm/frame.h"
 #include "vm/swap.h"
 #endif
 #ifdef FILESYS

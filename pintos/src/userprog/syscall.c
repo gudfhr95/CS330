@@ -9,6 +9,7 @@
 #include "threads/malloc.h"
 #include "threads/vaddr.h"
 #include "userprog/process.h"
+#include "vm/page.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
 
@@ -340,7 +341,28 @@ void close (int fd){
 
 
 mapid_t mmap (int fd, void *addr){
+  struct file *f = get_file_by_fd(fd);
+  struct file *mmap_file = file_reopen(f);
 
+  off_t ofs = 0;
+  uint32_t read_bytes = file_length(mmap_file);
+
+  while (read_bytes > 0)
+    {
+      size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
+      size_t page_zero_bytes = PGSIZE - page_read_bytes;
+
+      if(!page_table_add_entry(mmap_file, ofs, addr, page_read_bytes, page_zero_bytes, true, true)){
+        return -1;
+      }
+
+      read_bytes -= page_read_bytes;
+      ofs += page_read_bytes;
+      addr += PGSIZE;
+    }
+
+  thread_current()->mmap_count++;
+  return thread_current()->mmap_count - 1;
 }
 
 void munmap (mapid_t id){

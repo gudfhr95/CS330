@@ -108,6 +108,10 @@ struct thread
     struct list file_list;
     int fd_count;
 
+    //mmap list of current thread
+    struct list mmap_list;
+    int mmap_count;
+    
     //executable of current thread
     struct file *executable;
 

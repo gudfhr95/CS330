@@ -16,9 +16,19 @@ struct page_table_entry{
   bool is_swapped;
   block_sector_t sector_index;
 
+  int mmap;
+
   struct frame_table_entry *fte;
 
   struct hash_elem hash_elem;
+};
+
+
+struct mmap_entry{
+  struct page_table_entry *pte;
+  int mmap_id;
+
+  struct list_elem elem;
 };
 
 /* for hash table */
@@ -29,7 +39,7 @@ void page_table_action_function(struct hash_elem *a_, void *aux UNUSED);
 /* for managing page table */
 void page_table_init(struct hash *pt);
 void page_table_destroy(struct hash *pt);
-bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable);
+bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable, bool mmap);
 struct page_table_entry *page_table_lookup_by_upage(void *upage);
 
 /* for load page */

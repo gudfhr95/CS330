@@ -60,7 +60,7 @@ void page_table_destroy(struct hash *pt){
 }
 
 /* add entry of page table. If done, return true */
-bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable){
+bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable, bool mmap){
   struct page_table_entry *pte = malloc(sizeof(struct page_table_entry));
   void *uaddr = pg_round_down(upage);
   pte->file = file;
@@ -71,6 +71,16 @@ bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t p
   pte->writable = writable;
   pte->valid = false;
   pte->is_swapped = false;
+  pte->mmap = mmap;
+
+  //add mmap
+  if(mmap){
+    struct mmap_entry *me = malloc(sizeof(struct mmap_entry));
+    me->pte = pte;
+    me->mmap_id = thread_current()->mmap_count;
+    list_push_back(&thread_current()->mmap_list, &me->elem);
+  }
+
   if(hash_insert(&thread_current()->spt, &pte->hash_elem) == NULL){
     return true;
   }
@@ -133,10 +143,8 @@ bool page_load_file(struct page_table_entry *pte){
     return false;
   }
 
-
   if (file_read_at(pte->file, kpage, pte->page_read_bytes, pte->ofs) != (int) pte->page_read_bytes){
     palloc_free_page (kpage);
-
     lock_release(&frame_lock);
     return false;
   }
