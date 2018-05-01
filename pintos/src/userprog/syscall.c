@@ -378,10 +378,13 @@ void munmap (mapid_t id){
   for(e=list_begin(&t->mmap_list); e!=list_end(&t->mmap_list); e=list_next(e)){
     struct mmap_entry *me = list_entry(e, struct mmap_entry, elem);
     if(me->mmap_id == id){
-      //write at file
-      lock_acquire(&file_lock);
-      file_write_at(me->pte->file, me->pte->upage, me->pte->page_read_bytes, me->pte->ofs);
-      lock_release(&file_lock);
+      // if pagedir is dirty, write at file
+      if(pagedir_is_dirty(t->pagedir, me->pte->upage)){
+        printf("FUCK\n");
+        lock_acquire(&file_lock);
+        file_write_at(me->pte->file, me->pte->upage, me->pte->page_read_bytes, me->pte->ofs);
+        lock_release(&file_lock);
+      }
       //remove fte
       list_remove(&me->pte->fte->elem);
       palloc_free_page(me->pte->fte->paddr);
@@ -428,7 +431,7 @@ static struct file *get_file_by_fd(int fd){
 }
 
 //close all files in current thread
-void close_all(){
+void close_all(void){
   struct thread *t = thread_current();
   while(!list_empty(&t->file_list)){
     struct file_list_elem *fle = list_entry(list_pop_front(&t->file_list), struct file_list_elem, elem);
@@ -436,4 +439,9 @@ void close_all(){
     list_remove(&fle->elem);
     free(fle);
   }
+}
+
+/* unmap all */
+void unmap_all(void){
+
 }
