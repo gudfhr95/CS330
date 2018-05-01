@@ -183,6 +183,9 @@ process_exit (void)
   //close current thread's executable
   file_close(cur->executable);
 
+  //unmap all mmap
+  unmap_all();
+
   //close all files in thread
   close_all();
 

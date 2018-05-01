@@ -8,5 +8,5 @@ struct lock file_lock;
 
 void syscall_init (void);
 void close_all(void);
-
+void unmap_all(void);
 #endif /* userprog/syscall.h */

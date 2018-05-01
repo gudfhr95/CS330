@@ -1,23 +1,3 @@
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oommake
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make check
-make
-make check
-cd ..
-cd ~
-git reset --hard master
-cd pintos/src/userprog/build
-make
-cd pintos/src/userprog/build
-make check
-make
-make check
-make
-make check
-make
-make check
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
 make
 make check
 make
@@ -1998,3 +1978,23 @@ cd pintos/src/vm/build
 vim grade
 ls
 vim grade
+cd pintos/src/vm/build
+make
+pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-clean -a mmap-clean -p ../../tests/vm/sample.txt -a sample.txt --swap-size=4 -- -q  -f run mmap-clean
+make grade
+vim grade
+cd ~
+git add .
+git commit -m "mmap-clean passed"
+git push origin master
+cd pintos/src/vm/build
+pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-write -a mmap-write --swap-size=4 -- -q  -f run mmap-write
+make
+pintos -v -k -T 60 --qemu  --filesys-size=2 -p tests/vm/mmap-write -a mmap-write --swap-size=4 -- -q  -f run mmap-write
+make grade
+vim grade
+cd~
+cd ~
+git add .
+git commit -m "mmap-write passed"
+git push origin master

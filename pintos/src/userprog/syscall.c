@@ -442,5 +442,8 @@ void close_all(void){
 
 /* unmap all */
 void unmap_all(void){
-
+  unsigned i;
+  for(i=2; i<thread_current()->mmap_count; i++){
+    munmap(i);
+  }
 }
