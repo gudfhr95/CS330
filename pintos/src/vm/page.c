@@ -73,6 +73,7 @@ bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t p
   pte->is_swapped = false;
   pte->mmap = mmap;
 
+
   //add mmap
   if(mmap){
     struct mmap_entry *me = malloc(sizeof(struct mmap_entry));
@@ -104,6 +105,8 @@ struct page_table_entry *page_table_lookup_by_upage(void *upage){
 bool page_fault_handler(void *uaddr, bool stack){
   void *upage = pg_round_down(uaddr);
   struct page_table_entry *pte = page_table_lookup_by_upage(upage);
+  //printf("ADDR : %p\n", pte->upage);
+  //printf("WRITABLE : %d\n", pte->writable);
   //if no pte
   if(pte == NULL){
     //grow stack case

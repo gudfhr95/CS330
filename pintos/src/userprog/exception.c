@@ -158,7 +158,10 @@ page_fault (struct intr_frame *f)
   bool load = false;
   bool stack = false;
 
-  //printf("FAULT ADDR : %p\n", fault_addr);
+
+
+
+  // for load page
   if(is_user_vaddr(fault_addr) && not_present){
     //stack growing
     if(fault_addr >= f->esp-32){
@@ -168,6 +171,14 @@ page_fault (struct intr_frame *f)
     load = page_fault_handler(fault_addr, stack);
   }
 
+  // for write denying in code
+  if(is_user_vaddr(fault_addr) && !not_present){
+    void *upage = pg_round_down(fault_addr);
+    struct page_table_entry *pte = page_table_lookup_by_upage(upage);
+    if(pte->writable == 0){
+      exit(-1);
+    }
+  }
 
   if(!load){
     /* To implement virtual memory, delete the rest of the function
