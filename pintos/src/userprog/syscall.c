@@ -380,7 +380,6 @@ void munmap (mapid_t id){
     if(me->mmap_id == id){
       // if pagedir is dirty, write at file
       if(pagedir_is_dirty(t->pagedir, me->pte->upage)){
-        printf("FUCK\n");
         lock_acquire(&file_lock);
         file_write_at(me->pte->file, me->pte->upage, me->pte->page_read_bytes, me->pte->ofs);
         lock_release(&file_lock);
