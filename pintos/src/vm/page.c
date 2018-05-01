@@ -10,11 +10,13 @@
 #include "vm/frame.h"
 #include "filesys/file.h"
 
+
 /* Returns a hash value for page p. */
 unsigned page_table_hash(const struct hash_elem *p_, void *aux UNUSED){
   const struct page_table_entry *p = hash_entry(p_, struct page_table_entry, hash_elem);
   return hash_bytes(&p->upage, sizeof(p->upage));
 }
+
 
 /* Returns true if page a precedes page b. */
 bool page_table_less(const struct hash_elem *a_, const struct hash_elem *b_, void *aux UNUSED){
@@ -22,6 +24,7 @@ bool page_table_less(const struct hash_elem *a_, const struct hash_elem *b_, voi
   const struct page_table_entry *b = hash_entry(b_, struct page_table_entry, hash_elem);
   return a->upage < b->upage;
 }
+
 
 /* for destroying and freeing all elements in page table */
 void page_table_action_function(struct hash_elem *a_, void *aux UNUSED){
@@ -35,7 +38,6 @@ void page_table_action_function(struct hash_elem *a_, void *aux UNUSED){
     }
     //if pte is not swapped
     else{
-      //printf("FUCK\n");
       lock_acquire(&frame_lock);
       struct frame_table_entry *fte = pte->fte;
       list_remove(&fte->elem);
@@ -54,10 +56,12 @@ void page_table_init(struct hash *pt){
   hash_init(pt, page_table_hash, page_table_less, NULL);
 }
 
+
 /* destroy page table */
 void page_table_destroy(struct hash *pt){
   hash_destroy(pt, page_table_action_function);
 }
+
 
 /* add entry of page table. If done, return true */
 bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t page_read_bytes, size_t page_zero_bytes, bool writable, bool mmap){
@@ -72,7 +76,6 @@ bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t p
   pte->valid = false;
   pte->is_swapped = false;
   pte->mmap = mmap;
-
 
   //add mmap
   if(mmap){
@@ -91,6 +94,7 @@ bool page_table_add_entry(struct file *file, off_t ofs, uint8_t *upage, size_t p
   }
 }
 
+
 /* Returns the page containing the given virtual address,
 or a null pointer if no such page exists. */
 struct page_table_entry *page_table_lookup_by_upage(void *upage){
@@ -105,8 +109,6 @@ struct page_table_entry *page_table_lookup_by_upage(void *upage){
 bool page_fault_handler(void *uaddr, bool stack){
   void *upage = pg_round_down(uaddr);
   struct page_table_entry *pte = page_table_lookup_by_upage(upage);
-  //printf("ADDR : %p\n", pte->upage);
-  //printf("WRITABLE : %d\n", pte->writable);
   //if no pte
   if(pte == NULL){
     //grow stack case
@@ -126,7 +128,7 @@ bool page_fault_handler(void *uaddr, bool stack){
       if(pte->is_swapped){
         return page_load_swap(pte);
       }
-      //if pte is not swapped
+      //if pte is not swapped (already loaded)
       else{
         return true;
       }
@@ -138,13 +140,13 @@ bool page_fault_handler(void *uaddr, bool stack){
   }
 }
 
+
 /* load page from file */
 bool page_load_file(struct page_table_entry *pte){
   uint8_t *kpage = frame_get_page (PAL_USER|PAL_ZERO);
   lock_acquire(&frame_lock);
   if (kpage == NULL){
     lock_release(&frame_lock);
-
     return false;
   }
 
@@ -177,6 +179,7 @@ bool page_load_file(struct page_table_entry *pte){
   return true;
 }
 
+
 /* load page from swap disk */
 bool page_load_swap(struct page_table_entry *pte){
   uint8_t *kpage = frame_get_page(PAL_USER|PAL_ZERO);
@@ -191,12 +194,14 @@ bool page_load_swap(struct page_table_entry *pte){
     return false;
   }
 
+  //add frame table
   struct frame_table_entry *fte = malloc(sizeof(struct frame_table_entry));
   fte->paddr = kpage;
   fte->pte = pte;
   fte->thread = thread_current();
   list_push_back(&frame_table, &fte->elem);
 
+  //change state of pte
   pte->is_swapped = false;
   pte->fte = fte;
 
@@ -247,6 +252,7 @@ bool page_grow_stack(void *uaddr){
       fte->thread = thread_current();
       list_push_back(&frame_table, &fte->elem);
 
+      //change state of pte
       pte->is_swapped = false;
       pte->fte = fte;
     }

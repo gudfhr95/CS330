@@ -12,6 +12,7 @@ void frame_table_init(void){
   lock_init(&frame_lock);
 }
 
+
 /* get one page from frame table */
 void *frame_get_page(enum palloc_flags flags){
   lock_acquire(&frame_lock);
@@ -37,19 +38,6 @@ void *frame_get_page(enum palloc_flags flags){
   }
 }
 
-/* free all physical frame owned by thread t */
-void frame_free_all(struct thread *t){
-  struct list_elem *e;
-  for(e=list_begin(&frame_table); e!=list_end(&frame_table); e=list_next(e)){
-    struct frame_table_entry *fte = list_entry(e, struct frame_table_entry, elem);
-    if(fte->thread == t){
-      pagedir_clear_page(t->pagedir, fte->pte->upage);
-      list_remove(&fte->elem);
-      palloc_free_page(fte->paddr);
-      free(fte);
-    }
-  }
-}
 
 /* find victim for frame table */
 struct frame_table_entry *frame_find_victim(void){

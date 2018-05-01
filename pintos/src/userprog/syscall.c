@@ -348,6 +348,10 @@ mapid_t mmap (int fd, void *addr){
   if(addr == NULL){
     return -1;
   }
+  // if addr is misalligned
+  if(addr != pg_round_down(addr)){
+    return -1;
+  }
 
   struct file *f = get_file_by_fd(fd);
   struct file *mmap_file = file_reopen(f);

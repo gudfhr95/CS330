@@ -16,7 +16,8 @@ struct page_table_entry{
   bool is_swapped;
   block_sector_t sector_index;
 
-  int mmap;
+  /* for mmap */
+  bool mmap;
 
   struct frame_table_entry *fte;
 

@@ -1,10 +1,12 @@
 #include "vm/swap.h"
 #include <stdio.h>
 
+
 /* init swap */
 void swap_init(void){
   lock_init(&swap_lock);
   swap_block = block_get_role(BLOCK_SWAP);
+  //no swap block case
   if(swap_block == NULL){
     printf("NO SWAP DISK\n");
   }
@@ -16,6 +18,7 @@ void swap_init(void){
   }
 }
 
+
 /* swap in */
 void swap_in(block_sector_t index, void *paddr){
   lock_acquire(&swap_lock);
@@ -23,6 +26,7 @@ void swap_in(block_sector_t index, void *paddr){
   if(bitmap_test(swap_bitmap, index) == 0){
     printf("INVALID SWAP BLOCK INDEX\n");
   }
+  //read block at paddr
   else{
     unsigned i;
     for(i=0; i<8; i++){
@@ -30,14 +34,13 @@ void swap_in(block_sector_t index, void *paddr){
     }
   }
   bitmap_set(swap_bitmap, index, 0);
-
   lock_release(&swap_lock);
 }
+
 
 /* swap out */
 block_sector_t swap_out(void *paddr){
   lock_acquire(&swap_lock);
-
   unsigned i;
   bool is_full = true;
   // check whether swap disk is full
@@ -51,6 +54,7 @@ block_sector_t swap_out(void *paddr){
   if(is_full){
     printf("SWAP DISK FULL\n");
   }
+  //write paddr to block
   else{
     unsigned j;
     for(j=0; j<8; j++){
@@ -58,7 +62,6 @@ block_sector_t swap_out(void *paddr){
     }
   }
   bitmap_set(swap_bitmap, i, 1);
-  
   lock_release(&swap_lock);
   return i;
 }
