@@ -323,6 +323,7 @@ unsigned tell (int fd){
   }
 }
 
+
 void close (int fd){
   struct thread *t = thread_current();
   //for exit(-1) case
@@ -359,6 +360,7 @@ mapid_t mmap (int fd, void *addr){
   off_t ofs = 0;
   uint32_t read_bytes = file_length(mmap_file);
 
+  //read along file
   while (read_bytes > 0){
     size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
     size_t page_zero_bytes = PGSIZE - page_read_bytes;
@@ -370,6 +372,7 @@ mapid_t mmap (int fd, void *addr){
     read_bytes -= page_read_bytes;
     ofs += page_read_bytes;
 
+    //add mmap memory to frame
     void *upage = pg_round_down(addr);
     struct page_table_entry *pte = page_table_lookup_by_upage(upage);
     page_load_file(pte);
@@ -377,13 +380,16 @@ mapid_t mmap (int fd, void *addr){
     addr += PGSIZE;
   }
 
+  //increase mmap count and return
   thread_current()->mmap_count++;
   return thread_current()->mmap_count - 1;
 }
 
+
 void munmap (mapid_t id){
   struct thread *t = thread_current();
   struct list_elem *e;
+  //iterate through mmap list
   for(e=list_begin(&t->mmap_list); e!=list_end(&t->mmap_list); e=list_next(e)){
     struct mmap_entry *me = list_entry(e, struct mmap_entry, elem);
     if(me->mmap_id == id){
@@ -403,12 +409,9 @@ void munmap (mapid_t id){
       free(me->pte);
       //remove me
       list_remove(&me->elem);
-      //free(me);
     }
   }
 }
-
-
 
 
 //check whether vaddr is valid addr, if not, exit
@@ -424,6 +427,7 @@ static uintptr_t* get_arg(void* esp, int num){
   check_addr(vaddr);
   return (uintptr_t *) vaddr;
 }
+
 
 //get current thread's file list and find file by fd
 static struct file *get_file_by_fd(int fd){
@@ -449,7 +453,7 @@ void close_all(void){
   }
 }
 
-/* unmap all */
+/* unmap all in current thread */
 void unmap_all(void){
   unsigned i;
   for(i=2; i<((unsigned)thread_current()->mmap_count); i++){

@@ -189,6 +189,7 @@ process_exit (void)
   //close all files in thread
   close_all();
 
+  //destroy page table
   page_table_destroy(&cur->spt);
 
   //wake up parent
@@ -590,6 +591,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
       size_t page_read_bytes = read_bytes < PGSIZE ? read_bytes : PGSIZE;
       size_t page_zero_bytes = PGSIZE - page_read_bytes;
 
+      // add page table for lazy loading
       if(!page_table_add_entry(file, ofs, upage, page_read_bytes, page_zero_bytes, writable, false)){
         return false;
       }
@@ -640,6 +642,7 @@ setup_stack (void **esp)
   fte->thread = thread_current();
   list_push_back(&frame_table, &fte->elem);
 
+  //update pte
   pte->is_swapped = false;
   pte->fte = fte;
 

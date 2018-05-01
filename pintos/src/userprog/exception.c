@@ -159,7 +159,7 @@ page_fault (struct intr_frame *f)
   bool stack = false;
 
 
-  //user access to kernel address
+  //invalid user access to kernel address
   if(is_kernel_vaddr(fault_addr) && user){
     exit(-1);
   }
