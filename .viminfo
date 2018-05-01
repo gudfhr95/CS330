@@ -18,7 +18,7 @@ $
 
 # Command Line History (newest to oldest):
 :q
-|2,0,1525150045,,"q"
+|2,0,1525156016,,"q"
 :ㅂ
 |2,0,1524920297,,"ㅂ"
 :q!
@@ -84,34 +84,84 @@ $
 |3,0,36,0,1,0,1521278363,"("
 
 # File marks:
-'0  75  6  ~/pintos/src/vm/build/grade
-|4,48,75,6,1525150045,"~/pintos/src/vm/build/grade"
-'1  68  6  ~/pintos/src/vm/build/grade
-|4,49,68,6,1525148742,"~/pintos/src/vm/build/grade"
-'2  68  6  ~/pintos/src/vm/build/grade
-|4,50,68,6,1525148742,"~/pintos/src/vm/build/grade"
-'3  1  7  ~/pintos/src/vm/build/grade
-|4,51,1,7,1525147523,"~/pintos/src/vm/build/grade"
-'4  1  7  ~/pintos/src/vm/build/grade
-|4,52,1,7,1525147523,"~/pintos/src/vm/build/grade"
-'5  1  7  ~/pintos/src/vm/build/grade
-|4,53,1,7,1525147523,"~/pintos/src/vm/build/grade"
-'6  1  7  ~/pintos/src/vm/build/grade
-|4,54,1,7,1525147523,"~/pintos/src/vm/build/grade"
-'7  1  0  ~/grade
-|4,55,1,0,1525147509,"~/grade"
-'8  1  7  ~/pintos/src/vm/build/grade
-|4,56,1,7,1525147486,"~/pintos/src/vm/build/grade"
-'9  1  7  ~/pintos/src/vm/build/grade
-|4,57,1,7,1525147486,"~/pintos/src/vm/build/grade"
+'0  1  9  ~/pintos/src/vm/build/grade
+|4,48,1,9,1525156016,"~/pintos/src/vm/build/grade"
+'1  70  6  ~/pintos/src/vm/build/grade
+|4,49,70,6,1525155371,"~/pintos/src/vm/build/grade"
+'2  70  6  ~/pintos/src/vm/build/grade
+|4,50,70,6,1525155371,"~/pintos/src/vm/build/grade"
+'3  53  6  ~/pintos/src/vm/build/grade
+|4,51,53,6,1525153860,"~/pintos/src/vm/build/grade"
+'4  53  6  ~/pintos/src/vm/build/grade
+|4,52,53,6,1525153860,"~/pintos/src/vm/build/grade"
+'5  53  6  ~/pintos/src/vm/build/grade
+|4,53,53,6,1525153860,"~/pintos/src/vm/build/grade"
+'6  53  6  ~/pintos/src/vm/build/grade
+|4,54,53,6,1525153860,"~/pintos/src/vm/build/grade"
+'7  75  6  ~/pintos/src/vm/build/grade
+|4,55,75,6,1525152077,"~/pintos/src/vm/build/grade"
+'8  75  6  ~/pintos/src/vm/build/grade
+|4,56,75,6,1525152077,"~/pintos/src/vm/build/grade"
+'9  75  6  ~/pintos/src/vm/build/grade
+|4,57,75,6,1525152077,"~/pintos/src/vm/build/grade"
 
 # Jumplist (newest first):
+-'  1  9  ~/pintos/src/vm/build/grade
+|4,39,1,9,1525156016,"~/pintos/src/vm/build/grade"
+-'  70  6  ~/pintos/src/vm/build/grade
+|4,39,70,6,1525156007,"~/pintos/src/vm/build/grade"
+-'  70  6  ~/pintos/src/vm/build/grade
+|4,39,70,6,1525155371,"~/pintos/src/vm/build/grade"
+-'  53  6  ~/pintos/src/vm/build/grade
+|4,39,53,6,1525155366,"~/pintos/src/vm/build/grade"
+-'  53  6  ~/pintos/src/vm/build/grade
+|4,39,53,6,1525155366,"~/pintos/src/vm/build/grade"
+-'  53  6  ~/pintos/src/vm/build/grade
+|4,39,53,6,1525153860,"~/pintos/src/vm/build/grade"
+-'  75  6  ~/pintos/src/vm/build/grade
+|4,39,75,6,1525153855,"~/pintos/src/vm/build/grade"
+-'  75  6  ~/pintos/src/vm/build/grade
+|4,39,75,6,1525153855,"~/pintos/src/vm/build/grade"
+-'  75  6  ~/pintos/src/vm/build/grade
+|4,39,75,6,1525153855,"~/pintos/src/vm/build/grade"
+-'  75  6  ~/pintos/src/vm/build/grade
+|4,39,75,6,1525152077,"~/pintos/src/vm/build/grade"
+-'  62  6  ~/pintos/src/vm/build/grade
+|4,39,62,6,1525152033,"~/pintos/src/vm/build/grade"
+-'  62  6  ~/pintos/src/vm/build/grade
+|4,39,62,6,1525152033,"~/pintos/src/vm/build/grade"
+-'  62  6  ~/pintos/src/vm/build/grade
+|4,39,62,6,1525152033,"~/pintos/src/vm/build/grade"
+-'  62  6  ~/pintos/src/vm/build/grade
+|4,39,62,6,1525152033,"~/pintos/src/vm/build/grade"
+-'  62  6  ~/pintos/src/vm/build/grade
+|4,39,62,6,1525151868,"~/pintos/src/vm/build/grade"
+-'  75  6  ~/pintos/src/vm/build/grade
+|4,39,75,6,1525151863,"~/pintos/src/vm/build/grade"
 -'  75  6  ~/pintos/src/vm/build/grade
 |4,39,75,6,1525150045,"~/pintos/src/vm/build/grade"
 -'  68  6  ~/pintos/src/vm/build/grade
 |4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
 -'  68  6  ~/pintos/src/vm/build/grade
+|4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
+-'  68  6  ~/pintos/src/vm/build/grade
+|4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
+-'  68  6  ~/pintos/src/vm/build/grade
+|4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
+-'  68  6  ~/pintos/src/vm/build/grade
+|4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
+-'  68  6  ~/pintos/src/vm/build/grade
+|4,39,68,6,1525150024,"~/pintos/src/vm/build/grade"
+-'  68  6  ~/pintos/src/vm/build/grade
 |4,39,68,6,1525148742,"~/pintos/src/vm/build/grade"
+-'  1  7  ~/pintos/src/vm/build/grade
+|4,39,1,7,1525148621,"~/pintos/src/vm/build/grade"
+-'  1  7  ~/pintos/src/vm/build/grade
+|4,39,1,7,1525148621,"~/pintos/src/vm/build/grade"
+-'  1  7  ~/pintos/src/vm/build/grade
+|4,39,1,7,1525148621,"~/pintos/src/vm/build/grade"
+-'  1  7  ~/pintos/src/vm/build/grade
+|4,39,1,7,1525148621,"~/pintos/src/vm/build/grade"
 -'  1  7  ~/pintos/src/vm/build/grade
 |4,39,1,7,1525148621,"~/pintos/src/vm/build/grade"
 -'  1  7  ~/pintos/src/vm/build/grade
@@ -134,184 +184,134 @@ $
 |4,39,1,0,1525147509,"~/grade"
 -'  1  0  ~/grade
 |4,39,1,0,1525147509,"~/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525147486,"~/pintos/src/vm/build/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525147486,"~/pintos/src/vm/build/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525139116,"~/pintos/src/vm/build/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525139116,"~/pintos/src/vm/build/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525138629,"~/pintos/src/vm/build/grade"
--'  1  7  ~/pintos/src/vm/build/grade
-|4,39,1,7,1525138629,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525138561,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525115452,"~/pintos/src/vm/build/grade"
--'  44  4  ~/pintos/src/vm/build/grade
-|4,39,44,4,1525115452,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525115440,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525109855,"~/pintos/src/vm/build/grade"
--'  38  4  ~/pintos/src/vm/build/grade
-|4,39,38,4,1525109855,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109846,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109796,"~/pintos/src/vm/build/grade"
--'  62  4  ~/pintos/src/vm/build/grade
-|4,39,62,4,1525109796,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525109755,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525102970,"~/pintos/src/vm/build/grade"
--'  29  4  ~/pintos/src/vm/build/grade
-|4,39,29,4,1525102970,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525102899,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525093718,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525093718,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525092105,"~/pintos/src/vm/build/grade"
--'  49  4  ~/pintos/src/vm/build/grade
-|4,39,49,4,1525092105,"~/pintos/src/vm/build/grade"
--'  1  3  ~/pintos/src/vm/build/grade
-|4,39,1,3,1525090220,"~/pintos/src/vm/build/grade"
--'  1  3  ~/pintos/src/vm/build/grade
-|4,39,1,3,1525090220,"~/pintos/src/vm/build/grade"
--'  1  3  ~/pintos/src/vm/build/grade
-|4,39,1,3,1525090220,"~/pintos/src/vm/build/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
+-'  1  0  ~/grade
+|4,39,1,0,1525147509,"~/grade"
 
 # History of marks within files (newest to oldest):
 
 > ~/pintos/src/vm/build/grade
-	*	1525150042	0
-	"	75	6
+	*	1525156015	0
+	"	1	9
 	a	69	0
 
 > ~/grade

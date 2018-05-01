@@ -117,7 +117,7 @@ syscall_handler (struct intr_frame *f UNUSED)
   	case SYS_TELL:
       if(PRINT)
   		  printf("\nSYS_TELL\n");
-      tell((int) *get_arg(esp, 0));
+      f->eax = tell((int) *get_arg(esp, 0));
   		break;
 
   	case SYS_CLOSE:
@@ -129,7 +129,7 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_MMAP:
       if(PRINT)
         printf("\nSYS_MMAP\n");
-      mmap((int) *get_arg(esp,0), (void *) *get_arg(esp, 1));
+      f->eax = mmap((int) *get_arg(esp,0), (void *) *get_arg(esp, 1));
       break;
 
     case SYS_MUNMAP:
@@ -344,6 +344,11 @@ void close (int fd){
 
 
 mapid_t mmap (int fd, void *addr){
+  // if mapping to NULL address
+  if(addr == NULL){
+    return -1;
+  }
+
   struct file *f = get_file_by_fd(fd);
   struct file *mmap_file = file_reopen(f);
 
@@ -443,7 +448,7 @@ void close_all(void){
 /* unmap all */
 void unmap_all(void){
   unsigned i;
-  for(i=2; i<thread_current()->mmap_count; i++){
+  for(i=2; i<((unsigned)thread_current()->mmap_count); i++){
     munmap(i);
   }
 }
