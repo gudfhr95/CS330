@@ -137,8 +137,37 @@ syscall_handler (struct intr_frame *f UNUSED)
         printf("\nSYS_MUNMAP\n");
       munmap((int) *get_arg(esp, 0));
       break;
-  }
 
+    case SYS_CHDIR:
+      if(PRINT)
+        printf("\nSYS_CHDIR\n");
+      chdir ((const char *) *get_arg(esp, 0));
+      break;
+
+    case SYS_MKDIR:
+      if(PRINT)
+        printf("\nSYS_MKDIR\n");
+      mkdir ((const char *) *get_arg(esp, 0));
+      break;
+
+    case SYS_READDIR:
+      if(PRINT)
+        printf("\nSYS_READDIR\n");
+      readdir ((int) *get_arg(esp, 0), (char *) *get_arg(esp, 1));
+      break;
+
+    case SYS_ISDIR:
+      if(PRINT)
+        printf("\nSYS_ISDIR\n");
+      isdir ((int) *get_arg(esp, 0));
+      break;
+
+    case SYS_INUMBER:
+      if(PRINT)
+        printf("\nSYS_INUMBER\n");
+      inumber ((int) *get_arg(esp, 0));
+      break;
+  }
 }
 
 
@@ -181,6 +210,7 @@ bool create (const char *file, unsigned initial_size){
   lock_release(&file_lock);
   return b;
 }
+
 
 bool remove (const char *file){
   //remove file
@@ -294,6 +324,7 @@ int write (int fd, const void *buffer, unsigned length){
     }
   }
 }
+
 
 void seek (int fd, unsigned position){
   lock_acquire(&file_lock);
@@ -411,6 +442,32 @@ void munmap (mapid_t id){
       list_remove(&me->elem);
     }
   }
+}
+
+
+bool chdir (const char *dir){
+
+}
+
+
+bool mkdir (const char *dir){
+
+}
+
+
+bool readdir (int fd, char name[READDIR_MAX_LEN + 1]){
+
+
+}
+
+
+bool isdir (int fd){
+
+}
+
+
+int inumber (int fd){
+
 }
 
 

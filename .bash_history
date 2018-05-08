@@ -1,38 +1,3 @@
-make
-make check
-make
-make check
-make
-make check
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make check
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make check
-make
-make check
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-make check
-make
-make check
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-make check
-make
-make check
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make
-pintos -v -k -T 360 --qemu  --filesys-size=2 -p tests/userprog/no-vm/multi-oom -a multi-oom -- -q  -f run multi-oom
-make check
-make
 make check
 make
 make check
@@ -1998,3 +1963,38 @@ cd ~
 git add .
 git commit -m "mmap-write passed"
 git push origin master
+cd cs230_project2
+ls
+./20140631
+gcc -o 20140631 20140631.c 
+./20140631
+rm 20140631.tar
+ls
+./20140631
+tar -cvf 20140631.tar *
+./20140631
+ls
+cd ..
+ls
+cd pintos/src/vm/filesys
+ls
+cd pintos
+cd src
+ls
+cd filesys
+make
+cd ..
+ls
+make
+make clean
+make
+cd filesys
+ls
+make
+git reset --hard master
+make
+make grade
+cd build
+vim grade
+cd pintos/src/filesys/build
+vim grade
