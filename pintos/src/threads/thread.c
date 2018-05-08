@@ -470,6 +470,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
 
+  t->wakeup_tick = 0;   //set wakeup tick 0
   //to init fd list
   t->fd_count = 2;
   list_init(&t->file_list);

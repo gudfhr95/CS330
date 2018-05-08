@@ -1,6 +1,8 @@
 #include "filesys/cache.h"
 #include <string.h>
+#include "devices/timer.h"
 #include "threads/malloc.h"
+#include "threads/thread.h"
 #include "filesys/filesys.h"
 
 
@@ -8,6 +10,7 @@
 void cache_init(void){
   list_init(&cache);
   lock_init(&cache_lock);
+  thread_create("cache_write_behind", 0, thread_func_write_behind, NULL);
 }
 
 
@@ -89,4 +92,21 @@ struct cache_entry *cache_find_victim(void){
   struct list_elem *e = list_pop_back(&cache);
   struct cache_entry *victim = list_entry(e, struct cache_entry, elem);
   return victim;
+}
+
+
+/* for write behind thread */
+void thread_func_write_behind(void *aux UNUSED){
+  while(true){
+    timer_sleep(WRITE_BEHIND_PERIOD); //sleep
+    //synchronize dirty cache
+    struct list_elem *e;
+    for(e=list_begin(&cache); e!=list_end(&cache); e=list_next(e)){
+      struct cache_entry *c = list_entry(e, struct cache_entry, elem);
+      if(c->dirty){
+        block_write(fs_device, c->sector_index, &c->data);
+        c->dirty = false;
+      }
+    }
+  }
 }

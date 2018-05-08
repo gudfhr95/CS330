@@ -3,6 +3,7 @@
 #include "threads/synch.h"
 
 #define MAX_CACHE_SIZE 64
+#define WRITE_BEHIND_PERIOD 50
 
 struct list cache;
 
@@ -27,3 +28,7 @@ void cache_write(block_sector_t index, const void *buffer);
 /* for cache searching */
 struct cache_entry *cache_find_block(block_sector_t index);
 struct cache_entry *cache_find_victim(void);
+
+
+/* for write behind */
+void thread_func_write_behind(void *aux);

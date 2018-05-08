@@ -13,6 +13,10 @@ void timer_calibrate (void);
 int64_t timer_ticks (void);
 int64_t timer_elapsed (int64_t);
 
+//for wake up sleep thread
+void timer_update_sleep_list(void);
+void timer_wakeup(void);
+
 /* Sleep and yield the CPU to other threads. */
 void timer_sleep (int64_t ticks);
 void timer_msleep (int64_t milliseconds);

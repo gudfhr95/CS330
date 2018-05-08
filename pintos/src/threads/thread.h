@@ -92,6 +92,8 @@ struct thread
     int priority;                       /* Priority. */
     struct list_elem allelem;           /* List element for all threads list. */
 
+    int64_t wakeup_tick;  
+
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
@@ -111,7 +113,7 @@ struct thread
     //mmap list of current thread
     struct list mmap_list;
     int mmap_count;
-    
+
     //executable of current thread
     struct file *executable;
 
