@@ -19,7 +19,8 @@ void cache_init(void){
 
 /* get cache block
   if cache is full, evict */
-void cache_get_block(block_sector_t index){
+struct cache_entry *cache_get_block(block_sector_t index){
+  lock_acquire(&cache_lock);
   size_t cache_size = list_size(&cache);
   //if cache is full -> remove victim
   if(cache_size >= MAX_CACHE_SIZE){
@@ -36,6 +37,8 @@ void cache_get_block(block_sector_t index){
   c->valid = false;
   c->dirty = false;
   list_push_front(&cache, &c->elem);
+  lock_release(&cache_lock);
+  return c;
 }
 
 
@@ -46,16 +49,17 @@ void cache_read(block_sector_t index, void *buffer){
   struct cache_entry *c = cache_find_block(index);
   // if cache available
   if(c){
-    memcpy(buffer, &c->data, BLOCK_SECTOR_SIZE+1);
+    memcpy(buffer, &c->data, BLOCK_SECTOR_SIZE);
   }
   // if no cache
   else{
-    cache_get_block(index);
+    //make cache and read from it
+    c = cache_get_block(index);
+    memcpy(buffer, &c->data, BLOCK_SECTOR_SIZE);
     // add read ahead
     struct read_ahead_entry *rae = malloc(sizeof(struct read_ahead_entry));
     rae->sector_index = index+1;
     list_push_back(&read_ahead_list, &rae->elem);
-    memcpy(buffer, &c->data, BLOCK_SECTOR_SIZE+1);
   }
 }
 
@@ -67,13 +71,14 @@ void cache_write(block_sector_t index, const void *buffer){
   struct cache_entry *c = cache_find_block(index);
   // if cache available
   if(c){
-    memcpy(&c->data, buffer, BLOCK_SECTOR_SIZE+1);
+    memcpy(&c->data, buffer, BLOCK_SECTOR_SIZE);
     c->dirty = true;
   }
   // if no cache
   else{
-    cache_get_block(index);
-    memcpy(&c->data, buffer, BLOCK_SECTOR_SIZE+1);
+    // get cache and write data
+    c = cache_get_block(index);
+    memcpy(&c->data, buffer, BLOCK_SECTOR_SIZE);
     c->dirty = true;
   }
 }
@@ -83,12 +88,15 @@ void cache_write(block_sector_t index, const void *buffer){
   if there is no cache block, return NULL */
 struct cache_entry *cache_find_block(block_sector_t index){
   struct list_elem *e;
+  lock_acquire(&cache_lock);
   for(e=list_begin(&cache); e!=list_end(&cache); e=list_next(e)){
     struct cache_entry *c = list_entry(e, struct cache_entry, elem);
     if(c->sector_index == index){
+      lock_release(&cache_lock);
       return c;
     }
   }
+  lock_release(&cache_lock);
   return NULL;
 }
 
@@ -107,6 +115,7 @@ void thread_func_write_behind(void *aux UNUSED){
   while(true){
     timer_sleep(WRITE_BEHIND_PERIOD); //sleep
     //synchronize dirty cache
+    lock_acquire(&cache_lock);
     struct list_elem *e;
     for(e=list_begin(&cache); e!=list_end(&cache); e=list_next(e)){
       struct cache_entry *c = list_entry(e, struct cache_entry, elem);
@@ -115,6 +124,7 @@ void thread_func_write_behind(void *aux UNUSED){
         c->dirty = false;
       }
     }
+    lock_release(&cache_lock);
   }
 }
 

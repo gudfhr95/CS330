@@ -29,7 +29,7 @@ struct read_ahead_entry{
 
 /* for cache management */
 void cache_init(void);
-void cache_get_block(block_sector_t index);
+struct cache_entry *cache_get_block(block_sector_t index);
 void cache_read(block_sector_t index, void *buffer);
 void cache_write(block_sector_t index, const void *buffer);
 
