@@ -220,4 +220,3 @@ list_elem_to_block (struct list_elem *list_elem)
           ? list_entry (list_elem, struct block, list_elem)
           : NULL);
 }
-
