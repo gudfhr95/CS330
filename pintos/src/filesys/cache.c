@@ -10,7 +10,10 @@
 void cache_init(void){
   list_init(&cache);
   lock_init(&cache_lock);
+  // for read ahead and write behind
+  list_init(&read_ahead_list);
   thread_create("cache_write_behind", 0, thread_func_write_behind, NULL);
+  thread_create("cache_read_ahead", 0, thread_func_read_ahead, NULL);
 }
 
 
@@ -48,6 +51,10 @@ void cache_read(block_sector_t index, void *buffer){
   // if no cache
   else{
     cache_get_block(index);
+    // add read ahead
+    struct read_ahead_entry *rae = malloc(sizeof(struct read_ahead_entry));
+    rae->sector_index = index+1;
+    list_push_back(&read_ahead_list, &rae->elem);
     memcpy(buffer, &c->data, BLOCK_SECTOR_SIZE+1);
   }
 }
@@ -106,6 +113,29 @@ void thread_func_write_behind(void *aux UNUSED){
       if(c->dirty){
         block_write(fs_device, c->sector_index, &c->data);
         c->dirty = false;
+      }
+    }
+  }
+}
+
+
+/* for read ahead thread */
+void thread_func_read_ahead(void *aux UNUSED){
+  while(true){
+    timer_sleep(READ_AHEAD_PERIOD); // sleep
+    // if there is read ahead tasks
+    if(!list_empty(&read_ahead_list)){
+      // iterate through read ahead list
+      while(true){
+        // do caching and remove from the read ahead list
+        struct list_elem *e = list_pop_front(&read_ahead_list);
+        struct read_ahead_entry *rae = list_entry(e, struct read_ahead_entry, elem);
+        cache_get_block(rae->sector_index);
+        free(rae);
+        // if read ahead list is empty -> break
+        if(list_empty(&read_ahead_list)){
+          break;
+        }
       }
     }
   }

@@ -4,6 +4,7 @@
 
 #define MAX_CACHE_SIZE 64
 #define WRITE_BEHIND_PERIOD 50
+#define READ_AHEAD_PERIOD 25
 
 struct list cache;
 
@@ -17,6 +18,13 @@ struct cache_entry{
   struct list_elem elem;
 };
 
+
+struct list read_ahead_list;
+
+struct read_ahead_entry{
+  block_sector_t sector_index;
+  struct list_elem elem;
+};
 
 
 /* for cache management */
@@ -32,3 +40,6 @@ struct cache_entry *cache_find_victim(void);
 
 /* for write behind */
 void thread_func_write_behind(void *aux);
+
+/* for read ahead */
+void thread_func_read_ahead(void *aux);

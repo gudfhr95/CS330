@@ -44,7 +44,6 @@ timer_init (void)
   pit_configure_channel (0, 2, TIMER_FREQ);
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
   list_init(&sleep_list);
-  printf("sleep list init\n");
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -284,7 +283,7 @@ real_time_sleep (int64_t num, int32_t denom)
     {
       /* Otherwise, use a busy-wait loop for more accurate
          sub-tick timing. */
-      real_time_delay (num, denom); 
+      real_time_delay (num, denom);
     }
 }
 
