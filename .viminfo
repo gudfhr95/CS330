@@ -18,7 +18,7 @@ $
 
 # Command Line History (newest to oldest):
 :q
-|2,0,1525761593,,"q"
+|2,0,1525763010,,"q"
 :ㅂ
 |2,0,1524920297,,"ㅂ"
 :q!
@@ -85,27 +85,29 @@ $
 
 # File marks:
 '0  8  0  ~/pintos/src/filesys/build/grade
-|4,48,8,0,1525761593,"~/pintos/src/filesys/build/grade"
+|4,48,8,0,1525763010,"~/pintos/src/filesys/build/grade"
 '1  8  0  ~/pintos/src/filesys/build/grade
-|4,49,8,0,1525760257,"~/pintos/src/filesys/build/grade"
+|4,49,8,0,1525761593,"~/pintos/src/filesys/build/grade"
 '2  8  0  ~/pintos/src/filesys/build/grade
-|4,50,8,0,1525759424,"~/pintos/src/filesys/build/grade"
+|4,50,8,0,1525760257,"~/pintos/src/filesys/build/grade"
 '3  8  0  ~/pintos/src/filesys/build/grade
-|4,51,8,0,1525759424,"~/pintos/src/filesys/build/grade"
-'4  1  0  ~/pintos/src/filesys/grade
-|4,52,1,0,1525758853,"~/pintos/src/filesys/grade"
-'5  16  1  ~/pintos/src/filesys/build/grade
-|4,53,16,1,1525313219,"~/pintos/src/filesys/build/grade"
-'6  16  1  ~/pintos/src/filesys/build/grade
-|4,54,16,1,1525313219,"~/pintos/src/filesys/build/grade"
-'7  16  1  ~/pintos/src/filesys/build/grade
-|4,55,16,1,1525313219,"~/pintos/src/filesys/build/grade"
-'8  16  1  ~/pintos/src/filesys/build/grade
-|4,56,16,1,1525313219,"~/pintos/src/filesys/build/grade"
+|4,51,8,0,1525760257,"~/pintos/src/filesys/build/grade"
+'4  8  0  ~/pintos/src/filesys/build/grade
+|4,52,8,0,1525759424,"~/pintos/src/filesys/build/grade"
+'5  8  0  ~/pintos/src/filesys/build/grade
+|4,53,8,0,1525759424,"~/pintos/src/filesys/build/grade"
+'6  8  0  ~/pintos/src/filesys/build/grade
+|4,54,8,0,1525759424,"~/pintos/src/filesys/build/grade"
+'7  8  0  ~/pintos/src/filesys/build/grade
+|4,55,8,0,1525759424,"~/pintos/src/filesys/build/grade"
+'8  1  0  ~/pintos/src/filesys/grade
+|4,56,1,0,1525758853,"~/pintos/src/filesys/grade"
 '9  16  1  ~/pintos/src/filesys/build/grade
 |4,57,16,1,1525313219,"~/pintos/src/filesys/build/grade"
 
 # Jumplist (newest first):
+-'  8  0  ~/pintos/src/filesys/build/grade
+|4,39,8,0,1525763010,"~/pintos/src/filesys/build/grade"
 -'  8  0  ~/pintos/src/filesys/build/grade
 |4,39,8,0,1525761593,"~/pintos/src/filesys/build/grade"
 -'  8  0  ~/pintos/src/filesys/build/grade
@@ -118,6 +120,24 @@ $
 |4,39,16,1,1525758857,"~/pintos/src/filesys/build/grade"
 -'  16  1  ~/pintos/src/filesys/build/grade
 |4,39,16,1,1525758857,"~/pintos/src/filesys/build/grade"
+-'  16  1  ~/pintos/src/filesys/build/grade
+|4,39,16,1,1525758857,"~/pintos/src/filesys/build/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
+-'  1  0  ~/pintos/src/filesys/grade
+|4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
 -'  1  0  ~/pintos/src/filesys/grade
 |4,39,1,0,1525758853,"~/pintos/src/filesys/grade"
 -'  1  0  ~/pintos/src/filesys/grade
@@ -149,6 +169,8 @@ $
 -'  310  1  ~/pintos/src/filesys/build/grade
 |4,39,310,1,1525313145,"~/pintos/src/filesys/build/grade"
 -'  310  1  ~/pintos/src/filesys/build/grade
+|4,39,310,1,1525313145,"~/pintos/src/filesys/build/grade"
+-'  310  1  ~/pintos/src/filesys/build/grade
 |4,39,310,1,1525313098,"~/pintos/src/filesys/build/grade"
 -'  310  1  ~/pintos/src/filesys/build/grade
 |4,39,310,1,1525313098,"~/pintos/src/filesys/build/grade"
@@ -166,6 +188,8 @@ $
 |4,39,1,0,1525313041,"~/pintos/src/filesys/build/grade"
 -'  1  0  ~/pintos/src/filesys/build/grade
 |4,39,1,0,1525313041,"~/pintos/src/filesys/build/grade"
+-'  1  0  ~/pintos/src/filesys/build/grade
+|4,39,1,0,1525313041,"~/pintos/src/filesys/build/grade"
 -'  2  0  ~/pintos/src/vm/build/grade
 |4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
 -'  2  0  ~/pintos/src/vm/build/grade
@@ -282,35 +306,11 @@ $
 |4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
 -'  2  0  ~/pintos/src/vm/build/grade
 |4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158826,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
--'  2  0  ~/pintos/src/vm/build/grade
-|4,39,2,0,1525158615,"~/pintos/src/vm/build/grade"
 
 # History of marks within files (newest to oldest):
 
 > ~/pintos/src/filesys/build/grade
-	*	1525761591	0
+	*	1525763009	0
 	"	8	0
 	a	6	0
 
