@@ -44,7 +44,7 @@ filesys_done (void)
       block_write(fs_device, c->sector_index, &c->data);
     }
   }
-  
+
   free_map_close ();
 }
 
