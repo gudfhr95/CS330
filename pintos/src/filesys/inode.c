@@ -14,6 +14,7 @@
 
 #define MAX_DIRECT_BLOCK 12
 #define MAX_INDIRECT_BLOCK 128
+#define MAX_FILE_SIZE 8388608       /* 8*1024*1024 */
 
 /* On-disk inode.
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
@@ -148,6 +149,9 @@ inode_create (block_sector_t sector, off_t length, bool dir, block_sector_t pare
   if (disk_inode != NULL)
     {
       disk_inode->length = length;
+      if (disk_inode->length > MAX_FILE_SIZE){
+        disk_inode->length = MAX_FILE_SIZE;
+      }
       disk_inode->magic = INODE_MAGIC;
       disk_inode->dir = dir;
       disk_inode->parent = parent;
@@ -569,48 +573,54 @@ void inode_grow(struct inode *inode, off_t size){
   while(size > 0){
     //indirect growth case
     if(inode->direct_cnt < MAX_DIRECT_BLOCK){
-      free_map_allocate(1, &inode->data.direct_ptr[inode->direct_cnt]);
+      if(!free_map_allocate(1, &inode->data.direct_ptr[inode->direct_cnt]))
+        return;
       block_write(fs_device, inode->data.direct_ptr[inode->direct_cnt], zeros);
-      //printf("DIRECT PTR : %d\n", inode->data.direct_ptr[inode->direct_cnt]);
       inode->direct_cnt++;
     }
     //indirect growth case
     else if(inode->indirect_cnt < MAX_INDIRECT_BLOCK){
       // if indirect == 0, we have to allocate new block
       if(inode->indirect_cnt == 0){
-        free_map_allocate(1, &inode->data.indirect_ptr);
+        if(!free_map_allocate(1, &inode->data.indirect_ptr))
+          return;
         block_write(fs_device, inode->data.indirect_ptr, zeros);
       }
       block_read(fs_device, inode->data.indirect_ptr, block_ptr);  // read block ptrs in indirect block
-      free_map_allocate(1, &block_ptr[inode->indirect_cnt]);
+      if(!free_map_allocate(1, &block_ptr[inode->indirect_cnt]))
+        return;
       block_write(fs_device, block_ptr[inode->indirect_cnt], zeros);  // write single block ptr
       block_write(fs_device, inode->data.indirect_ptr, block_ptr);  // write indirect block
       inode->indirect_cnt++;
     }
     //double indirect growth case
-    else{
+    else {
       unsigned indirect_idx = inode->double_indirect_cnt / MAX_INDIRECT_BLOCK;
       unsigned block_idx = inode->double_indirect_cnt % MAX_INDIRECT_BLOCK;
       // if double_indirect == 0, we have to allocate new block
       if(inode->double_indirect_cnt == 0){
-        free_map_allocate(1, &inode->data.double_indirect_ptr);
+        if(!free_map_allocate(1, &inode->data.double_indirect_ptr))
+          return;
         block_write(fs_device, inode->data.double_indirect_ptr, zeros);
       }
       // allocate new indirect block
       if(inode->double_indirect_cnt % MAX_INDIRECT_BLOCK == 0){
         block_read(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
-        free_map_allocate(1, &indirect_ptr[indirect_idx]);
+        if(!free_map_allocate(1, &indirect_ptr[indirect_idx]))
+          return;
         block_write(fs_device, indirect_ptr[indirect_idx], zeros);
         block_write(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
       }
       block_read(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
       block_read(fs_device, indirect_ptr[indirect_idx], block_ptr);
-      free_map_allocate(1, &block_ptr[block_idx]);
+      if(!free_map_allocate(1, &block_ptr[block_idx]))
+        return;
       block_write(fs_device, block_ptr[block_idx], zeros);
       block_write(fs_device, indirect_ptr[indirect_idx], block_ptr);
       block_write(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
       inode->double_indirect_cnt++;
     }
+    
     size -= 1;
   }
 }
