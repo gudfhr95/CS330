@@ -389,23 +389,9 @@ inode_close (struct inode *inode)
         {
           inode_free(inode);
         }
-      // save inode data to disk in cache
+      // save inode data to disk
       else{
-        //synch
-        struct list_elem *e;
-        for(e=list_begin(&cache); e!=list_end(&cache); e=list_next(e)){
-          struct cache_entry *c = list_entry(e, struct cache_entry, elem);
-          if(inode->sector == c->sector_index){
-            if(c->dirty){
-              block_write(fs_device, c->sector_index, &c->data);
-            }
-            list_remove(&c->elem);
-            free(c);
-            break;
-          }
-        }
-
-
+        block_write(fs_device, inode->sector, &inode->data);
       }
       free (inode);
     }
@@ -426,17 +412,23 @@ void inode_free(struct inode *inode){
   block_sector_t block_ptr[MAX_INDIRECT_BLOCK];     // for indirect case
   block_sector_t indirect_ptr[MAX_INDIRECT_BLOCK];  // for double indirect case
   unsigned i, j;
+
   // direct
   for(i=0; i<inode->direct_cnt; i++){
     free_map_release(inode->data.direct_ptr[i], 1);
   }
   // indirect
+  if(inode->data.indirect_ptr == 0){
+    return;
+  }
   block_read(fs_device, inode->data.indirect_ptr, block_ptr); // read indirect block ptr
   for(i=0; i<inode->indirect_cnt; i++){
     free_map_release(block_ptr[i], 1);
   }
-
   // dobule indirect
+  if(inode->data.double_indirect_ptr == 0){
+    return;
+  }
   unsigned indirects = (inode->double_indirect_cnt / MAX_INDIRECT_BLOCK) + 1;
   block_read(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
   for(i=0; i<indirects; i++){

@@ -318,6 +318,18 @@ struct dir *dir_absolute_path(const char *dir_path){
   struct inode *inode;
   int i;
   for(i=0; i<argc-1; i++){
+    if(!strcmp(argv[argc-1], "..")){
+      inode = dir_get_inode(dir);
+      block_sector_t parent_sector = inode_get_parent_sector(inode);
+      dir_close(dir);
+      inode = inode_open(parent_sector);
+      dir = dir_open(inode);
+      continue;
+    }
+    if(!strcmp(argv[argc-1], ".")){
+      continue;
+    }
+
     dir_lookup(dir, argv[i], &inode);
     // if file name is in is in dir
     if(inode){
@@ -364,6 +376,18 @@ struct dir *dir_relative_path(const char *dir_path){
   struct inode *inode;
   int i;
   for(i=0; i<argc-1; i++){
+    if(!strcmp(argv[argc-1], "..")){
+      inode = dir_get_inode(dir);
+      block_sector_t parent_sector = inode_get_parent_sector(inode);
+      dir_close(dir);
+      inode = inode_open(parent_sector);
+      dir = dir_open(inode);
+      continue;
+    }
+    if(!strcmp(argv[argc-1], ".")){
+      continue;
+    }
+
     dir_lookup(dir, argv[i], &inode);
     // if file name is in is in dir
     if(inode){
