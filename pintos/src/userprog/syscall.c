@@ -24,7 +24,7 @@ static void syscall_handler (struct intr_frame *);
 
 #define PRINT 0    //for debugging
 
-#define MAX_DIRECTORY_CNT 10
+#define MAX_DIRECTORY_CNT 5
 
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
@@ -495,6 +495,16 @@ bool chdir (const char *dir_){
       }
     }
     else{
+      if(!strcmp(argv[argc-1], "..")){
+        inode = dir_get_inode(dir);
+        block_sector_t parent_sector = inode_get_parent_sector(inode);
+        dir_close(dir);
+        inode = inode_open(parent_sector);
+        dir = dir_open(inode);
+        dir_close(thread_current()->dir);
+        thread_current()->dir = dir;
+        return true;
+      }
       dir_lookup(dir, argv[argc-1], &inode);
       // if there is file in dir
       if(inode){
@@ -529,7 +539,6 @@ bool mkdir (const char *dir_){
     return false;
   }
   else{
-    lock_acquire(&file_lock);
     block_sector_t inode_sector = 0;
     struct dir *dir = NULL;
     // absolute path
@@ -550,7 +559,7 @@ bool mkdir (const char *dir_){
 
     struct inode *parent = dir_get_inode(dir);
     block_sector_t parent_sector = inode_get_sector(parent);
-    
+
     bool success = (dir != NULL
                     && free_map_allocate (1, &inode_sector)
                     && dir_create (inode_sector, MAX_DIRECTORY_CNT, parent_sector)
@@ -559,7 +568,6 @@ bool mkdir (const char *dir_){
       free_map_release (inode_sector, 1);
     dir_close(dir);
 
-    lock_release(&file_lock);
     return success;
   }
 }
@@ -567,24 +575,19 @@ bool mkdir (const char *dir_){
 
 bool readdir (int fd, char name[READDIR_MAX_LEN + 1]){
   struct file *f = get_file_by_fd(fd);
-  lock_acquire(&file_lock);
   // f is not in fd
    if (f == NULL){
-     lock_release(&file_lock);
      return false;
    }
    // if f is not dir
    if (!inode_get_dir(file_get_inode(f))){
-     lock_release(&file_lock);
      return false;
    }
    //readdir
    if (!dir_readdir((struct dir *) f, name)){
-     lock_release(&file_lock);
      return false;
    }
 
-   lock_release(&file_lock);
    return true;
 }
 

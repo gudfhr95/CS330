@@ -4,6 +4,7 @@
 #include <round.h>
 #include <string.h>
 #include "threads/malloc.h"
+#include "threads/synch.h"
 #include "filesys/filesys.h"
 #include "filesys/free-map.h"
 #include "filesys/cache.h"
@@ -73,6 +74,8 @@ struct inode
 
     bool dir;                           /* indicate whether inode is dir or not */
     block_sector_t parent;              /* parent sector number of dir */
+
+    struct lock inode_lock;              /* lock of inode */
   };
 
 /* Returns the block device sector that contains byte offset POS
@@ -343,6 +346,8 @@ inode_open (block_sector_t sector)
   inode->dir = inode->data.dir;
   inode->parent = inode->data.parent;
 
+  lock_init(&inode->inode_lock);
+
   return inode;
 }
 
@@ -511,10 +516,21 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
     return 0;
 
   if (offset + size > inode_length(inode)){
-    inode_grow(inode, size + offset);
-    //size growth
-    inode->data.length = size + offset;
-    block_write(fs_device, inode->sector, &inode->data);
+    // if inode is file, acquire lock
+    if(!inode->dir){
+      inode_lock_acquire(inode);
+      inode_grow(inode, size + offset);
+      //size growth
+      inode->data.length = size + offset;
+      block_write(fs_device, inode->sector, &inode->data);
+      inode_lock_release(inode);
+    }
+    else{
+      inode_grow(inode, size + offset);
+      //size growth
+      inode->data.length = size + offset;
+      block_write(fs_device, inode->sector, &inode->data);
+    }
   }
 
 
@@ -646,7 +662,22 @@ block_sector_t inode_get_sector(const struct inode *inode){
   return inode->sector;
 }
 
+/* Returns parent sector of indoe */
+block_sector_t inode_get_parent_sector(const struct inode *inode){
+  return inode->parent;
+}
+
 /* Returns open_cont of inode */
 int inode_get_open_cnt(const struct inode *inode){
   return inode->open_cnt;
+}
+
+/* acquire lock of inode */
+void inode_lock_acquire(const struct inode *inode){
+  lock_acquire(&((struct inode *)inode)->inode_lock);
+}
+
+/* release lock of inode */
+void inode_lock_release(const struct inode *inode){
+  lock_release(&((struct inode *)inode)->inode_lock);
 }

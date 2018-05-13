@@ -125,7 +125,6 @@ filesys_open (const char *name)
       // if opening current directory
       if(!strcmp(argv[argc-1], ".")){
         inode = dir_get_inode(dir);
-        //dir_close(dir);
         return file_open(inode);
       }
       else{
