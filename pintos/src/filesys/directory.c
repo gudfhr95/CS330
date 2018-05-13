@@ -26,9 +26,9 @@ struct dir_entry
 /* Creates a directory with space for ENTRY_CNT entries in the
    given SECTOR.  Returns true if successful, false on failure. */
 bool
-dir_create (block_sector_t sector, size_t entry_cnt)
+dir_create (block_sector_t sector, size_t entry_cnt, block_sector_t parent)
 {
-  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true);
+  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true, parent);
 }
 
 /* Opens and returns the directory for the given INODE, of which
@@ -100,8 +100,7 @@ lookup (const struct dir *dir, const char *name,
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e;
-       ofs += sizeof e)
+  for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e; ofs += sizeof e){
     if (e.in_use && !strcmp (name, e.name))
       {
         if (ep != NULL)
@@ -110,6 +109,7 @@ lookup (const struct dir *dir, const char *name,
           *ofsp = ofs;
         return true;
       }
+  }
   return false;
 }
 
@@ -126,8 +126,11 @@ dir_lookup (const struct dir *dir, const char *name,
   ASSERT (dir != NULL);
   ASSERT (name != NULL);
 
-  if (lookup (dir, name, &e, NULL))
+  //printf("FUCK\n");
+  if (lookup (dir, name, &e, NULL)){
     *inode = inode_open (e.inode_sector);
+  }
+
   else
     *inode = NULL;
 
@@ -205,12 +208,12 @@ dir_remove (struct dir *dir, const char *name)
 
 
   // if erasing current directory, return false
-  if(inode_sector(dir_get_inode(thread_current()->dir)) == inode_sector(inode)){
+  if(inode_get_sector(dir_get_inode(thread_current()->dir)) == inode_get_sector(inode)){
     goto done;
   }
 
   // if dir is not empty, return false
-  if(inode_dir(inode)){
+  if(inode_get_dir(inode)){
     struct dir *dir_;
     dir_ = dir_open(inode);
     if(!dir_is_empty(dir_)){
@@ -313,7 +316,7 @@ struct dir *dir_absolute_path(const char *dir_path){
     // if file name is in is in dir
     if(inode){
       // if inode is dir
-      if(inode_dir(inode)){
+      if(inode_get_dir(inode)){
         dir_close(dir);
         dir = dir_open(inode);
         continue;
@@ -359,7 +362,7 @@ struct dir *dir_relative_path(const char *dir_path){
     // if file name is in is in dir
     if(inode){
       // if inode is dir
-      if(inode_dir(inode)){
+      if(inode_get_dir(inode)){
         dir_close(dir);
         dir = dir_open(inode);
         continue;

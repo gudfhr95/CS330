@@ -130,7 +130,7 @@ inode_init (void)
    Returns true if successful.
    Returns false if memory or disk allocation fails. */
 bool
-inode_create (block_sector_t sector, off_t length, bool dir)
+inode_create (block_sector_t sector, off_t length, bool dir, block_sector_t parent)
 {
   struct inode_disk *disk_inode = NULL;
   bool success = false;
@@ -147,6 +147,7 @@ inode_create (block_sector_t sector, off_t length, bool dir)
       disk_inode->length = length;
       disk_inode->magic = INODE_MAGIC;
       disk_inode->dir = dir;
+      disk_inode->parent = parent;
       // allocate disk_inode
       if (inode_alloc(disk_inode))
         {
@@ -383,16 +384,24 @@ inode_close (struct inode *inode)
         {
           inode_free(inode);
         }
-      // save inode data to disk
+      // save inode data to disk in cache
       else{
-        struct inode_disk *disk_inode = calloc(1, sizeof(struct inode_disk));
-        block_read (fs_device, inode->sector, disk_inode);
-        disk_inode->dir = inode->dir;
-        disk_inode->parent = inode->parent;
-        block_write(fs_device, inode->sector, disk_inode);
-        free(disk_inode);
-      }
+        //synch
+        struct list_elem *e;
+        for(e=list_begin(&cache); e!=list_end(&cache); e=list_next(e)){
+          struct cache_entry *c = list_entry(e, struct cache_entry, elem);
+          if(inode->sector == c->sector_index){
+            if(c->dirty){
+              block_write(fs_device, c->sector_index, &c->data);
+            }
+            list_remove(&c->elem);
+            free(c);
+            break;
+          }
+        }
 
+
+      }
       free (inode);
     }
 }
@@ -470,6 +479,7 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
         break;
 
 
+      //printf("READ IDX : %d\n", sector_idx);
       struct cache_entry *c = cache_find_block(sector_idx); //get cache
       if(!c){
         c = cache_get_block(sector_idx);  // if no cache, allocate new cache
@@ -525,6 +535,7 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       if (chunk_size <= 0)
         break;
 
+      //printf("WRITE IDX : %d\n", sector_idx);
       struct cache_entry *c = cache_find_block(sector_idx); //get cache
       if(!c){
         c = cache_get_block(sector_idx);  // if no cache, allocate new cache
@@ -625,17 +636,17 @@ inode_length (const struct inode *inode)
 
 /* Returns the dir of inode */
 bool
-inode_dir (const struct inode *inode)
+inode_get_dir (const struct inode *inode)
 {
   return inode->dir;
 }
 
 /* Returns sector of inode */
-block_sector_t inode_sector(const struct inode *inode){
+block_sector_t inode_get_sector(const struct inode *inode){
   return inode->sector;
 }
 
 /* Returns open_cont of inode */
-int inode_open_cnt(const struct inode *inode){
+int inode_get_open_cnt(const struct inode *inode){
   return inode->open_cnt;
 }

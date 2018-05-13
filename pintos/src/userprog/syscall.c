@@ -243,7 +243,7 @@ int open (const char *file){
       return -1;
     }
     //make file list elem and put it to file list of the thread and return fd
-    struct file_list_elem *fle = calloc (1, sizeof (struct file_list_elem));
+    struct file_list_elem *fle = malloc (sizeof (struct file_list_elem));
     fle->f = f;
     fle->fd = thread_current()->fd_count;
     thread_current()->fd_count++;
@@ -318,7 +318,7 @@ int write (int fd, const void *buffer, unsigned length){
 
     struct file *f = get_file_by_fd(fd);
     //if no file in file_list or file is dir
-    if(f == NULL || inode_dir(file_get_inode(f))){
+    if(f == NULL || inode_get_dir(file_get_inode(f))){
       lock_release(&file_lock);
       return -1;
     }
@@ -372,7 +372,7 @@ void close (int fd){
     if(fle->fd == fd){
       struct inode *inode = file_get_inode(fle->f);
       // closing directory
-      if(inode_dir(inode)){
+      if(inode_get_dir(inode)){
         dir_close((struct dir *) fle->f);
       }
       // closing file
@@ -499,7 +499,7 @@ bool chdir (const char *dir_){
       // if there is file in dir
       if(inode){
         // if folder
-        if(inode_dir(inode)){
+        if(inode_get_dir(inode)){
           dir_close(dir);
           dir = dir_open(inode);
           dir_close(thread_current()->dir);   // close current directory
@@ -529,6 +529,7 @@ bool mkdir (const char *dir_){
     return false;
   }
   else{
+    lock_acquire(&file_lock);
     block_sector_t inode_sector = 0;
     struct dir *dir = NULL;
     // absolute path
@@ -547,14 +548,18 @@ bool mkdir (const char *dir_){
     strlcpy(temp_path, dir_, FILE_NAME_MAX_LENGTH);
     parse_dir_path(temp_path, argv, &argc);
 
+    struct inode *parent = dir_get_inode(dir);
+    block_sector_t parent_sector = inode_get_sector(parent);
+    
     bool success = (dir != NULL
                     && free_map_allocate (1, &inode_sector)
-                    && dir_create (inode_sector, MAX_DIRECTORY_CNT)
+                    && dir_create (inode_sector, MAX_DIRECTORY_CNT, parent_sector)
                     && dir_add (dir, argv[argc-1], inode_sector));
     if (!success && inode_sector != 0)
       free_map_release (inode_sector, 1);
     dir_close(dir);
 
+    lock_release(&file_lock);
     return success;
   }
 }
@@ -562,19 +567,24 @@ bool mkdir (const char *dir_){
 
 bool readdir (int fd, char name[READDIR_MAX_LEN + 1]){
   struct file *f = get_file_by_fd(fd);
+  lock_acquire(&file_lock);
   // f is not in fd
    if (f == NULL){
+     lock_release(&file_lock);
      return false;
    }
    // if f is not dir
-   if (!inode_dir(file_get_inode(f))){
+   if (!inode_get_dir(file_get_inode(f))){
+     lock_release(&file_lock);
      return false;
    }
    //readdir
    if (!dir_readdir((struct dir *) f, name)){
+     lock_release(&file_lock);
      return false;
    }
 
+   lock_release(&file_lock);
    return true;
 }
 
@@ -586,7 +596,7 @@ bool isdir (int fd){
      return false;
    }
 
-  if(inode_dir(file_get_inode(f))){
+  if(inode_get_dir(file_get_inode(f))){
     return true;
   }
   else{
@@ -602,7 +612,7 @@ int inumber (int fd){
   if(f == NULL){
     return -1;
   }
-  return inode_sector(file_get_inode(f));
+  return inode_get_sector(file_get_inode(f));
 }
 
 
