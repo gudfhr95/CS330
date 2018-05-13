@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <list.h>
+#include "threads/thread.h"
+#include "threads/malloc.h"
 #include "filesys/filesys.h"
 #include "filesys/inode.h"
-#include "threads/malloc.h"
+
 
 /* A directory. */
 struct dir
@@ -26,7 +28,7 @@ struct dir_entry
 bool
 dir_create (block_sector_t sector, size_t entry_cnt)
 {
-  return inode_create (sector, entry_cnt * sizeof (struct dir_entry));
+  return inode_create (sector, entry_cnt * sizeof (struct dir_entry), true);
 }
 
 /* Opens and returns the directory for the given INODE, of which
@@ -201,6 +203,23 @@ dir_remove (struct dir *dir, const char *name)
   if (inode == NULL)
     goto done;
 
+
+  // if erasing current directory, return false
+  if(inode_sector(dir_get_inode(thread_current()->dir)) == inode_sector(inode)){
+    goto done;
+  }
+
+  // if dir is not empty, return false
+  if(inode_dir(inode)){
+    struct dir *dir_;
+    dir_ = dir_open(inode);
+    if(!dir_is_empty(dir_)){
+      dir_close(dir_);
+      goto done;
+    }
+    dir_close(dir_);
+  }
+
   /* Erase directory entry. */
   e.in_use = false;
   if (inode_write_at (dir->inode, &e, sizeof e, ofs) != sizeof e)
@@ -233,4 +252,130 @@ dir_readdir (struct dir *dir, char name[NAME_MAX + 1])
         }
     }
   return false;
+}
+
+
+/* returns true if dir is empty */
+bool dir_is_empty(struct dir *dir){
+  struct dir_entry e;
+  off_t ofs;
+
+  ASSERT (dir != NULL);
+
+  for (ofs = 0; inode_read_at (dir->inode, &e, sizeof e, ofs) == sizeof e; ofs += sizeof e){
+    if (e.in_use){
+      return false;
+    }
+  }
+
+  return true;
+}
+
+//to parse file name
+void parse_dir_path(char *dir_path, char *argv[], int *argc){
+  char *ret_ptr;
+  char *next_ptr;
+
+  ret_ptr = strtok_r((char *)dir_path, "/", &next_ptr);
+
+  while(ret_ptr){
+    argv[(*argc)] = ret_ptr;
+    ret_ptr = strtok_r(NULL, "/", &next_ptr);
+    //argc number is one less than argc
+    (*argc)++;
+
+    //ARGV NULL CASE
+    if(ret_ptr == NULL){
+      argv[(*argc)] = ret_ptr;
+      argc++;
+      break;
+    }
+  }
+}
+
+
+/* get absolute path of given file name */
+struct dir *dir_absolute_path(const char *dir_path){
+  char temp_path[FILE_NAME_MAX_LENGTH];
+  char *argv[ARGS_MAX_LENGTH];
+  int argc=0;
+
+  strlcpy(temp_path, dir_path, FILE_NAME_MAX_LENGTH);
+
+  parse_dir_path(temp_path, argv, &argc);
+
+  struct dir *dir = dir_open_root();
+
+  struct inode *inode;
+  int i;
+  for(i=0; i<argc-1; i++){
+    dir_lookup(dir, argv[i], &inode);
+    // if file name is in is in dir
+    if(inode){
+      // if inode is dir
+      if(inode_dir(inode)){
+        dir_close(dir);
+        dir = dir_open(inode);
+        continue;
+      }
+      // if inode is file
+      else{
+        inode_close(inode);
+        dir_close(dir);
+        return NULL;
+      }
+    }
+    else{
+      dir_close(dir);
+      return NULL;
+    }
+  }
+
+  return dir;
+}
+
+/* get relative path of given file name */
+struct dir *dir_relative_path(const char *dir_path){
+  char temp_path[FILE_NAME_MAX_LENGTH];
+  char *argv[ARGS_MAX_LENGTH];
+  int argc=0;
+
+  strlcpy(temp_path, dir_path, FILE_NAME_MAX_LENGTH);
+
+  parse_dir_path(temp_path, argv, &argc);
+
+  struct dir *dir;
+  if(!thread_current()->dir){
+    dir = dir_open_root();
+  }
+  else{
+    dir = dir_reopen(thread_current()->dir);
+  }
+
+  struct inode *inode;
+  int i;
+  for(i=0; i<argc-1; i++){
+    dir_lookup(dir, argv[i], &inode);
+    // if file name is in is in dir
+    if(inode){
+      // if inode is dir
+      if(inode_dir(inode)){
+        dir_close(dir);
+        dir = dir_open(inode);
+        continue;
+      }
+      // if inode is file
+      else{
+        inode_close(inode);
+        dir_close(dir);
+        return NULL;
+      }
+    }
+    else{
+      dir_close(dir);
+      return NULL;
+    }
+  }
+
+  return dir;
 }

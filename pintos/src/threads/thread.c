@@ -98,6 +98,7 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
+  initial_thread->dir = NULL;
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -483,8 +484,9 @@ init_thread (struct thread *t, const char *name, int priority)
   sema_init(&t->load_waiting_sema, 0);
   sema_init(&t->child_waiting_sema, 0);
   sema_init(&t->parent_waiting_sema, 0);
-  //parent of current thread
-  t->parent = running_thread();
+
+  t->parent = running_thread();       //parent of current thread
+  t->dir = running_thread()->dir;     // inherit parents dir
   //put thread into parent's child list
   list_push_back(&running_thread()->child_list, &t->childelem);
 

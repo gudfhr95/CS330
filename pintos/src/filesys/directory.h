@@ -11,6 +11,10 @@
    retained, but much longer full path names must be allowed. */
 #define NAME_MAX 14
 
+#define FILE_NAME_MAX_LENGTH 100
+#define ARGS_MAX_LENGTH 25
+
+
 struct inode;
 
 /* Opening and closing directories. */
@@ -26,5 +30,11 @@ bool dir_lookup (const struct dir *, const char *name, struct inode **);
 bool dir_add (struct dir *, const char *name, block_sector_t);
 bool dir_remove (struct dir *, const char *name);
 bool dir_readdir (struct dir *, char name[NAME_MAX + 1]);
+
+/* utils */
+bool dir_is_empty(struct dir *dir);
+void parse_dir_path(char *dir_path, char *argv[], int *argc);
+struct dir *dir_absolute_path(const char *dir_path);
+struct dir *dir_relative_path(const char *dir_path);
 
 #endif /* filesys/directory.h */

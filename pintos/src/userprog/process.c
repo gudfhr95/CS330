@@ -24,9 +24,7 @@
 #include "filesys/file.h"
 #include "filesys/filesys.h"
 
-
 static thread_func start_process NO_RETURN;
-
 
 #define FILE_NAME_MAX_LENGTH 100
 #define ARGS_MAX_LENGTH 25
@@ -106,6 +104,10 @@ start_process (void *file_name_)
   //wake up parent
   sema_up(&thread_current()->parent->load_waiting_sema);
 
+  // if current dir is NULL, open root dir
+  if(!thread_current()->dir){
+    thread_current()->dir= dir_open_root();
+  }
 
   /* If load failed, quit. */
   palloc_free_page (file_name);

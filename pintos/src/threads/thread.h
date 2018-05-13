@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <hash.h>
 #include "threads/synch.h"
+#include "filesys/directory.h"
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -92,8 +93,9 @@ struct thread
     int priority;                       /* Priority. */
     struct list_elem allelem;           /* List element for all threads list. */
 
-    int64_t wakeup_tick;  
+    int64_t wakeup_tick;
 
+    struct dir *dir;                     /* current working directory of thread */
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 

@@ -1,5 +1,6 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
+#include <string.h>
 #include <syscall-nr.h>
 #include <user/syscall.h>
 #include "devices/shutdown.h"
@@ -13,13 +14,17 @@
 #include "userprog/pagedir.h"
 #include "vm/page.h"
 #include "vm/frame.h"
+#include "filesys/inode.h"
 #include "filesys/file.h"
 #include "filesys/filesys.h"
+#include "filesys/free-map.h"
 
 static void syscall_handler (struct intr_frame *);
 
 
 #define PRINT 0    //for debugging
+
+#define MAX_DIRECTORY_CNT 10
 
 void check_addr(void* vaddr);
 static uintptr_t* get_arg(void* esp, int num);
@@ -141,31 +146,31 @@ syscall_handler (struct intr_frame *f UNUSED)
     case SYS_CHDIR:
       if(PRINT)
         printf("\nSYS_CHDIR\n");
-      chdir ((const char *) *get_arg(esp, 0));
+      f->eax = chdir ((const char *) *get_arg(esp, 0));
       break;
 
     case SYS_MKDIR:
       if(PRINT)
         printf("\nSYS_MKDIR\n");
-      mkdir ((const char *) *get_arg(esp, 0));
+      f->eax = mkdir ((const char *) *get_arg(esp, 0));
       break;
 
     case SYS_READDIR:
       if(PRINT)
         printf("\nSYS_READDIR\n");
-      readdir ((int) *get_arg(esp, 0), (char *) *get_arg(esp, 1));
+      f->eax = readdir ((int) *get_arg(esp, 0), (char *) *get_arg(esp, 1));
       break;
 
     case SYS_ISDIR:
       if(PRINT)
         printf("\nSYS_ISDIR\n");
-      isdir ((int) *get_arg(esp, 0));
+      f->eax = isdir ((int) *get_arg(esp, 0));
       break;
 
     case SYS_INUMBER:
       if(PRINT)
         printf("\nSYS_INUMBER\n");
-      inumber ((int) *get_arg(esp, 0));
+      f->eax = inumber ((int) *get_arg(esp, 0));
       break;
   }
 }
@@ -201,7 +206,7 @@ int wait (pid_t pid){
 
 bool create (const char *file, unsigned initial_size){
   //if file name is NULL
-  if(file == NULL){
+  if(!strcmp(file, "")){
     exit(-1);
   }
   //create file
@@ -224,9 +229,9 @@ bool remove (const char *file){
 int open (const char *file){
   lock_acquire(&file_lock);
   //if file is NULL
-  if(file == NULL){
+  if(!strcmp(file, "")){
     lock_release(&file_lock);
-    exit(-1);
+    return -1;
   }
   //if file is not null
   else{
@@ -312,8 +317,8 @@ int write (int fd, const void *buffer, unsigned length){
     }
 
     struct file *f = get_file_by_fd(fd);
-    //if no file in file_list
-    if(f == NULL){
+    //if no file in file_list or file is dir
+    if(f == NULL || inode_dir(file_get_inode(f))){
       lock_release(&file_lock);
       return -1;
     }
@@ -365,7 +370,15 @@ void close (int fd){
   for(e=list_begin(&t->file_list); e!=list_end(&t->file_list); e=list_next(e)){
     struct file_list_elem *fle = list_entry(e, struct file_list_elem, elem);
     if(fle->fd == fd){
-      file_close(fle->f);
+      struct inode *inode = file_get_inode(fle->f);
+      // closing directory
+      if(inode_dir(inode)){
+        dir_close((struct dir *) fle->f);
+      }
+      // closing file
+      else{
+        file_close(fle->f);
+      }
       list_remove(&fle->elem);
       free(fle);
       break;
@@ -445,29 +458,151 @@ void munmap (mapid_t id){
 }
 
 
-bool chdir (const char *dir){
+bool chdir (const char *dir_){
+  // if dir is NULL
+  if(!strcmp(dir_, "")){
+    return true;
+  }
+  else{
+    struct dir *dir = NULL;
+    // absolute path
+    if(dir_[0] == '/'){
+      dir = dir_absolute_path(dir_);
+    }
+    // relative path
+    else{
+      dir = dir_relative_path(dir_);
+    }
 
+    // if no dir available
+    if(!dir){
+      return false;
+    }
+
+    // get name of file
+    char temp_path[FILE_NAME_MAX_LENGTH];
+    char *argv[ARGS_MAX_LENGTH];
+    int argc=0;
+    strlcpy(temp_path, dir_, FILE_NAME_MAX_LENGTH);
+    parse_dir_path(temp_path, argv, &argc);
+
+    struct inode *inode;
+    if(argc == 0){
+      if(!strcmp(argv[argc-1], "/")){
+        dir_close(thread_current()->dir);
+        thread_current()->dir = dir_open_root();
+        return true;
+      }
+    }
+    else{
+      dir_lookup(dir, argv[argc-1], &inode);
+      // if there is file in dir
+      if(inode){
+        // if folder
+        if(inode_dir(inode)){
+          dir_close(dir);
+          dir = dir_open(inode);
+          dir_close(thread_current()->dir);   // close current directory
+          thread_current()->dir = dir;        // set current directory
+          return true;
+        }
+        // if file
+        else{
+          inode_close(inode);
+          dir_close(dir);
+          return false;
+        }
+      }
+      // if no file name in dir
+      else{
+        dir_close(dir);
+        return false;
+      }
+    }
+  }
 }
 
 
-bool mkdir (const char *dir){
+bool mkdir (const char *dir_){
+  // if dir is NULL
+  if(!strcmp(dir_, "")){
+    return false;
+  }
+  else{
+    block_sector_t inode_sector = 0;
+    struct dir *dir = NULL;
+    // absolute path
+    if(dir_[0] == '/'){
+      dir = dir_absolute_path(dir_);
+    }
+    // relative path
+    else{
+      dir = dir_relative_path(dir_);
+    }
 
+    // get name of file
+    char temp_path[FILE_NAME_MAX_LENGTH];
+    char *argv[ARGS_MAX_LENGTH];
+    int argc=0;
+    strlcpy(temp_path, dir_, FILE_NAME_MAX_LENGTH);
+    parse_dir_path(temp_path, argv, &argc);
+
+    bool success = (dir != NULL
+                    && free_map_allocate (1, &inode_sector)
+                    && dir_create (inode_sector, MAX_DIRECTORY_CNT)
+                    && dir_add (dir, argv[argc-1], inode_sector));
+    if (!success && inode_sector != 0)
+      free_map_release (inode_sector, 1);
+    dir_close(dir);
+
+    return success;
+  }
 }
 
 
 bool readdir (int fd, char name[READDIR_MAX_LEN + 1]){
+  struct file *f = get_file_by_fd(fd);
+  // f is not in fd
+   if (f == NULL){
+     return false;
+   }
+   // if f is not dir
+   if (!inode_dir(file_get_inode(f))){
+     return false;
+   }
+   //readdir
+   if (!dir_readdir((struct dir *) f, name)){
+     return false;
+   }
 
-
+   return true;
 }
 
 
 bool isdir (int fd){
+  struct file *f = get_file_by_fd(fd);
+  // f is not in fd
+   if (f == NULL){
+     return false;
+   }
+
+  if(inode_dir(file_get_inode(f))){
+    return true;
+  }
+  else{
+    return false;
+  }
 
 }
 
 
 int inumber (int fd){
-
+  struct file *f = get_file_by_fd(fd);
+  // if no file in fd
+  if(f == NULL){
+    return -1;
+  }
+  return inode_sector(file_get_inode(f));
 }
 
 

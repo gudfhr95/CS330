@@ -18,7 +18,6 @@
    Must be exactly BLOCK_SECTOR_SIZE bytes long. */
 struct inode_disk
   {
-    block_sector_t start;
     off_t length;                       /* File size in bytes. */
     unsigned magic;                     /* Magic number. */
 
@@ -26,7 +25,10 @@ struct inode_disk
     block_sector_t indirect_ptr;      /* pointer sector number of indirect block */
     block_sector_t double_indirect_ptr;   /* pointer sector number of double indirect block */
 
-    uint32_t unused[111];               /* Not used. */
+    bool dir;                       /* indicate whether inode is dir or not */
+    block_sector_t parent;          /* parent sector number of dir */
+
+    uint32_t unused[110];               /* Not used. */
   };
 
 struct indirect_disk{
@@ -68,6 +70,9 @@ struct inode
     size_t direct_cnt;                  /* number of direct block */
     size_t indirect_cnt;                /* number of indirect direct block */
     size_t double_indirect_cnt;         /* number of double indirect direct block */
+
+    bool dir;                           /* indicate whether inode is dir or not */
+    block_sector_t parent;              /* parent sector number of dir */
   };
 
 /* Returns the block device sector that contains byte offset POS
@@ -125,7 +130,7 @@ inode_init (void)
    Returns true if successful.
    Returns false if memory or disk allocation fails. */
 bool
-inode_create (block_sector_t sector, off_t length)
+inode_create (block_sector_t sector, off_t length, bool dir)
 {
   struct inode_disk *disk_inode = NULL;
   bool success = false;
@@ -141,6 +146,7 @@ inode_create (block_sector_t sector, off_t length)
     {
       disk_inode->length = length;
       disk_inode->magic = INODE_MAGIC;
+      disk_inode->dir = dir;
       // allocate disk_inode
       if (inode_alloc(disk_inode))
         {
@@ -332,6 +338,10 @@ inode_open (block_sector_t sector)
     inode->indirect_cnt = MAX_INDIRECT_BLOCK;
     inode->double_indirect_cnt = (sectors - MAX_DIRECT_BLOCK - MAX_INDIRECT_BLOCK);
   }
+
+  inode->dir = inode->data.dir;
+  inode->parent = inode->data.parent;
+
   return inode;
 }
 
@@ -373,6 +383,15 @@ inode_close (struct inode *inode)
         {
           inode_free(inode);
         }
+      // save inode data to disk
+      else{
+        struct inode_disk *disk_inode = calloc(1, sizeof(struct inode_disk));
+        block_read (fs_device, inode->sector, disk_inode);
+        disk_inode->dir = inode->dir;
+        disk_inode->parent = inode->parent;
+        block_write(fs_device, inode->sector, disk_inode);
+        free(disk_inode);
+      }
 
       free (inode);
     }
@@ -602,4 +621,21 @@ off_t
 inode_length (const struct inode *inode)
 {
   return inode->data.length;
+}
+
+/* Returns the dir of inode */
+bool
+inode_dir (const struct inode *inode)
+{
+  return inode->dir;
+}
+
+/* Returns sector of inode */
+block_sector_t inode_sector(const struct inode *inode){
+  return inode->sector;
+}
+
+/* Returns open_cont of inode */
+int inode_open_cnt(const struct inode *inode){
+  return inode->open_cnt;
 }
