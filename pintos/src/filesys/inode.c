@@ -620,7 +620,7 @@ void inode_grow(struct inode *inode, off_t size){
       block_write(fs_device, inode->data.double_indirect_ptr, indirect_ptr);
       inode->double_indirect_cnt++;
     }
-    
+
     size -= 1;
   }
 }
